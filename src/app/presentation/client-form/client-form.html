@@ -1,81 +1,41 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 p-4">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8">
 
-  <!-- IDENTIFICATION SECTION -->
-  <div class="grid grid-cols-2 gap-4">
-    <h2 class="col-span-2 text-xl font-semibold">Client</h2>
-    <div>
-      <button  (click)="nextPage()" class="bg-green-600 text-white px-6 py-2 roundedwe">Next</button>
-    </div>
-    <div class="flex-auto">
-      <label for="buttondisplay" class="font-bold block mb-2"> Id </label>
-      <input pInputText formControlName="idType" placeholder="ID Type" class="w-full" />
-    </div>
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Last Name</label>
-      <input pInputText formControlName="lastName" placeholder="Last Name" class="w-full" />
-    </div>
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">First Name</label>
-      <input pInputText formControlName="firstName" placeholder="First Name" class="w-full" />
-    </div>
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Citizenship</label>
-      <input pInputText formControlName="citizenship" placeholder="Citizenship" class="w-full" />
-    </div>
-
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">National Id</label>
-      <input pInputText formControlName="nationalId" placeholder="CNP" class="w-full" />
-    </div>
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Series</label>
-      <input pInputText formControlName="series" placeholder="Series" class="w-full" />
-    </div>
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Number</label>
-      <input pInputText formControlName="number" placeholder="Number" class="w-full" />
-    </div>
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Birth Country</label>
-      <input pInputText formControlName="birthCountry" placeholder="Birth Country" class="w-full" />
-    </div>
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Birth City</label>
-      <input pInputText formControlName="birthCity" placeholder="Birth City" class="w-full" />
-    </div>
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Issuer</label>
-      <input pInputText formControlName="issuer" placeholder="Issuer" class="w-full" />
-    </div>
-
-    
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Birth Date</label>
-      <p-datepicker formControlName="birthDate"   />
-    </div>
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Issue Date</label>
-      <p-datepicker formControlName="issueDate" class="w-full"  />
-    </div>
-
-    <div class="flex-auto">
-      <label class="font-bold block mb-2">Expiry Date</label>
-      <p-datepicker formControlName="expiryDate" class="w-full"  />
-    </div>
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-purple-300 tracking-tight">Client Registration</h2>
+    <button type="button" (click)="nextPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
+      Next
+    </button>
   </div>
 
+  <!-- FORM FIELDS -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    @for (field of fields; track field.name) {
+      <div class="flex flex-col gap-1">
+        <label class="font-semibold text-gray-200 mb-1">{{field.label}}</label>
+        @switch (field.type) {
+          @case ('date') {
+            <p-datepicker  [formControlName]="field.name" class="w-full  text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition"  />
+          }
+          @case ('email') {
+            <input pInputText [formControlName]="field.name" type="email" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" [placeholder]="field.placeholder" />
+          }
+          @default {
+            <input pInputText [formControlName]="field.name" [placeholder]="field.placeholder" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" />
+          }
+        }
+        @if (form.get(field.name)?.invalid && (form.get(field.name)?.dirty || form.get(field.name)?.touched)) {
+          <div class="text-red-400 text-xs mt-1">
+            {{ getErrorMessage(field.name) }}
+          </div>
+        }
+      </div>
+    }
+  </div>
 
-  <!-- SUBMIT -->
-  <div>
-    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">
+  <!-- SUBMIT BUTTON -->
+  <div class="flex justify-end">
+    <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white px-8 py-2 rounded-lg shadow transition disabled:opacity-50" [disabled]="form.invalid">
       Submit Client
     </button>
   </div>

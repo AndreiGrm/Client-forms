@@ -1,22 +1,50 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 p-4">
-  <h2 class="text-xl font-semibold mb-2">Companies</h2>
-  <div>
-    <button  (click)="previousPage()" class="bg-red-600 text-white px-6 py-2 roundedwe">Back</button>
-  </div>
-    @for (company of companies.controls; track company.get('id')?.value) {
-      <div [formGroup]="company" class="grid grid-cols-2 gap-4 mb-4 p-2 border rounded">
-        <input pInputText formControlName="name" placeholder="Company Name" class="w-full" />
-        <input pInputText formControlName="cui" placeholder="CUI" class="w-full" />
-        <input pInputText formControlName="tradeRegisterNumber" placeholder="Trade Register No." class="w-full" />
-        <input pInputText formControlName="mainCaen" placeholder="CAEN Code" class="w-full" />
-        <input pInputText formControlName="address" placeholder="Address" class="w-full col-span-2" />
-        <button type="button" (click)="removeCompany(company.value)" class="text-red-600 underline text-sm">Remove Company</button>
-      </div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8">
 
-    }
-
-
-    <button type="button" (click)="addCompany()" class="bg-blue-600 text-white px-4 py-2 rounded">
-      Add Company
+    <!-- HEADER -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-purple-300 tracking-tight">Companies</h2>
+    <button type="button" (click)="previousPage()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow transition">
+      Back
     </button>
+  </div>
+
+
+    <!-- @for (company of companies; track company.get('id')?.value) { -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      @for (field of fields; track field.name) {
+        <div class="flex flex-col gap-1">
+          <label class="font-semibold text-gray-200 mb-1">{{field.label}}</label>
+          @switch (field.type) {
+            @case ('date') {
+              <input pInputText [formControlName]="field.name" type="date" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" />
+            }
+            @case ('email') {
+              <input pInputText [formControlName]="field.name" type="email" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" [placeholder]="field.placeholder" />
+            }
+            @default {
+              <input pInputText [formControlName]="field.name" [placeholder]="field.placeholder" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" />
+            }
+          }
+        </div>
+        <!-- @if (form.get(field.name)?.invalid && (form.get(field.name)?.dirty || form.get(field.name)?.touched)) {
+          <div class="text-red-400 text-xs mt-1">
+            {{ getErrorMessage(field.name) }}
+          </div>
+        } -->
+      }
+    <!-- } -->
+
+    </div>
+
+
+  <!-- <button type="button" (click)="addCompany()" class="bg-blue-600 text-white px-4 py-2 rounded">
+    Add Company
+  </button> -->
+
+    <!-- SUBMIT BUTTON -->
+  <div class="flex justify-end">
+    <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white px-8 py-2 rounded-lg shadow transition disabled:opacity-50" [disabled]="form.invalid">
+      Submit Client
+    </button>
+  </div>
 </form>

@@ -5,6 +5,8 @@ export interface Client {
   idType: string;
   lastName: string;
   firstName: string;
+  email: string;
+  phone: string;
   citizenship: string;
   birthDate: Date;
   nationalId: number; // CNP
@@ -16,6 +18,6 @@ export interface Client {
   issueDate: Date;
   expiryDate: Date;
 
-  companies: Company[];     // Now an array
-  residence: Residence;     // Still a single object
+  companies: Company;
+  residence: Residence;
 }
