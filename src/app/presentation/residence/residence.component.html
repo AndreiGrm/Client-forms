@@ -1,0 +1,25 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 p-4">
+    <div class="grid grid-cols-2 gap-4">
+        <h2 class="col-span-2 text-xl font-semibold">Residenceee</h2>
+        <div>
+          <button  (click)="previousPage()" class="bg-red-600 text-white px-6 py-2 roundedwe">Back</button>
+          <button  (click)="nextPage()" class="bg-green-600 text-white px-6 py-2 roundedwe">Next</button>
+        </div>
+        <input pInputText formControlName="country" placeholder="Country" class="w-full" />
+        <input pInputText formControlName="cityOrSector" placeholder="City / Sector" class="w-full" />
+        <input pInputText formControlName="type" placeholder="Type" class="w-full" />
+        <input pInputText formControlName="streetType" placeholder="Street Type" class="w-full" />
+        <input pInputText formControlName="streetName" placeholder="Street Name" class="w-full" />
+        <input pInputText formControlName="number" placeholder="Number" class="w-full" />
+        <input pInputText formControlName="building" placeholder="Building" class="w-full" />
+        <input pInputText formControlName="staircase" placeholder="Staircase" class="w-full" />
+        <input pInputText formControlName="floor" placeholder="Floor" class="w-full" />
+        <input pInputText formControlName="apartment" placeholder="Apartment" class="w-full" />
+
+    </div>
+  <div>
+    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">
+      Submit Client
+    </button>
+  </div>
+</form>

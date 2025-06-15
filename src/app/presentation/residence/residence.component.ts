@@ -1,46 +1,37 @@
 import { Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
-import { DatePickerModule } from 'primeng/datepicker';
-import { Client } from '../../model/client.model';
-import { Company } from '../../model/company.model';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-client-form',
-  templateUrl: './client-form.html',
-  styleUrls: ['./client-form.css'],
+  selector: 'app-residence',
   imports: [
     ReactiveFormsModule,
     InputTextModule,
     InputNumberModule,
-    ButtonModule,
-    DatePickerModule
-  ]
+    ButtonModule
+  ],
+  templateUrl: './residence.component.html',
+  styleUrl: './residence.component.css'
 })
-export default class ClientFormComponent {
+export default class ResidenceComponent {
   private fb = inject(FormBuilder).nonNullable;
   router = inject(Router)
   form = this.fb.group({
-    idType: [''],
-    lastName: [''],
-    firstName: [''],
-    citizenship: [''],
-    birthDate: [null],
-    nationalId: [null],
-    series: [''],
+    country: [''],
+    cityOrSector: [''],
+    type: [''],
+    streetType: [''],
+    streetName: [''],
     number: [null],
-    birthCountry: [''],
-    birthCity: [''],
-    issuer: [''],
-    issueDate: [null],
-    expiryDate: [null]
-  });
-
-
+    building: [''],
+    staircase: [''],
+    floor: [null],
+    apartment: [null],
+  })
 
   onSubmit(): void {
     console.log(111);
@@ -50,8 +41,11 @@ export default class ClientFormComponent {
     //   console.log('Form Submitted:', clientData);
     // }
   }
-
   nextPage () {
-    this.router.navigate(['../residence']);
+    this.router.navigate(['../company']);
+  }
+
+  previousPage () {
+    this.router.navigate(['']);
   }
 }
