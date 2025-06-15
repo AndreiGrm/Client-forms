@@ -1,0 +1,116 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 p-4">
+
+  <!-- IDENTIFICATION SECTION -->
+  <div class="grid grid-cols-2 gap-4">
+    <h2 class="col-span-2 text-xl font-semibold">Client</h2>
+    <div class="flex-auto">
+      <label for="buttondisplay" class="font-bold block mb-2"> Id </label>
+      <input pInputText formControlName="idType" placeholder="ID Type" class="w-full" />
+    </div>
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Last Name</label>
+      <input pInputText formControlName="lastName" placeholder="Last Name" class="w-full" />
+    </div>
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">First Name</label>
+      <input pInputText formControlName="firstName" placeholder="First Name" class="w-full" />
+    </div>
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Citizenship</label>
+      <input pInputText formControlName="citizenship" placeholder="Citizenship" class="w-full" />
+    </div>
+
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">National Id</label>
+      <input pInputText formControlName="nationalId" placeholder="CNP" class="w-full" />
+    </div>
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Series</label>
+      <input pInputText formControlName="series" placeholder="Series" class="w-full" />
+    </div>
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Number</label>
+      <input pInputText formControlName="number" placeholder="Number" class="w-full" />
+    </div>
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Birth Country</label>
+      <input pInputText formControlName="birthCountry" placeholder="Birth Country" class="w-full" />
+    </div>
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Birth City</label>
+      <input pInputText formControlName="birthCity" placeholder="Birth City" class="w-full" />
+    </div>
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Issuer</label>
+      <input pInputText formControlName="issuer" placeholder="Issuer" class="w-full" />
+    </div>
+
+    
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Birth Date</label>
+      <p-datepicker formControlName="birthDate"   />
+    </div>
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Issue Date</label>
+      <p-datepicker formControlName="issueDate" class="w-full"  />
+    </div>
+
+    <div class="flex-auto">
+      <label class="font-bold block mb-2">Expiry Date</label>
+      <p-datepicker formControlName="expiryDate" class="w-full"  />
+    </div>
+  </div>
+
+  <!-- RESIDENCE SECTION -->
+  <div class="grid grid-cols-2 gap-4">
+    <h2 class="col-span-2 text-xl font-semibold">Residence</h2>
+    <ng-container [formGroup]="residenceForm">
+      <input pInputText formControlName="country" placeholder="Country" class="w-full" />
+      <input pInputText formControlName="cityOrSector" placeholder="City / Sector" class="w-full" />
+      <input pInputText formControlName="type" placeholder="Type" class="w-full" />
+      <input pInputText formControlName="streetType" placeholder="Street Type" class="w-full" />
+      <input pInputText formControlName="streetName" placeholder="Street Name" class="w-full" />
+      <input pInputText formControlName="number" placeholder="Number" class="w-full" />
+      <input pInputText formControlName="building" placeholder="Building" class="w-full" />
+      <input pInputText formControlName="staircase" placeholder="Staircase" class="w-full" />
+      <input pInputText formControlName="floor" placeholder="Floor" class="w-full" />
+      <input pInputText formControlName="apartment" placeholder="Apartment" class="w-full" />
+    </ng-container>
+  </div>
+
+
+  <div>
+    <h2 class="text-xl font-semibold mb-2">Companies</h2>
+     @for (company of companies.controls; track company.get('id')?.value) {
+       <div [formGroup]="company" class="grid grid-cols-2 gap-4 mb-4 p-2 border rounded">
+         <input pInputText formControlName="name" placeholder="Company Name" class="w-full" />
+         <input pInputText formControlName="cui" placeholder="CUI" class="w-full" />
+         <input pInputText formControlName="tradeRegisterNumber" placeholder="Trade Register No." class="w-full" />
+         <input pInputText formControlName="mainCaen" placeholder="CAEN Code" class="w-full" />
+         <input pInputText formControlName="address" placeholder="Address" class="w-full col-span-2" />
+         <button type="button" (click)="removeCompany(company.value)" class="text-red-600 underline text-sm">Remove Company</button>
+       </div>
+
+     }
+
+
+    <button type="button" (click)="addCompany()" class="bg-blue-600 text-white px-4 py-2 rounded">
+      Add Companyw
+    </button>
+  </div>
+
+  <!-- SUBMIT -->
+  <div>
+    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">
+      Submit Client
+    </button>
+  </div>
+</form>
