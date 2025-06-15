@@ -20,36 +20,53 @@ import { Router } from '@angular/router';
 export default class CompanyComponent implements OnInit {
   private fb = inject(FormBuilder).nonNullable;
   router = inject(Router)
-   form = this.fb.group({
-    companies: this.fb.array([]),
+  companies: Company[] = [];
+  form = this.fb.group({
+    id: [null],
+    name: ['', [Validators.required, Validators.minLength(2)]],
+    cui: [null, [Validators.required, Validators.pattern(/^[0-9]{8,10}$/)]], // CUI: 8-10 cifre
+    tradeRegisterNumber: ['', [Validators.required, Validators.minLength(3)]],
+    mainCaen: [null, [Validators.required, Validators.pattern(/^[0-9]{4}$/)]], // CAEN: 4 cifre
+    address: ['', [Validators.required, Validators.minLength(5)]],
   });
 
-  get companies(): FormArray<FormGroup> {
-    return this.form.get('companies') as FormArray<FormGroup>;
-  }
+  fields = [
+    { name: 'name', label: 'Company Name', placeholder: 'Company Name', type: 'text' },
+    { name: 'cui', label: 'CUI', placeholder: 'CUI', type: 'text' },
+    { name: 'tradeRegisterNumber', label: 'Trade Register No.', placeholder: 'Trade Register No.', type: 'text' },
+    { name: 'mainCaen', label: 'CAEN Code', placeholder: 'CAEN Code', type: 'text' },
+    { name: 'address', label: 'Address', placeholder: 'Address', type: 'text' }
+  ];
+
 
   ngOnInit(): void {
-    this.addCompany()
+    // this.addCompany()
+    console.log(1)
+    
   }
   
 
-  addCompany(): void {
-    const companyGroup = this.fb.group({
-      id: [null],
-      name: [''],
-      cui: [null],
-      tradeRegisterNumber: [''],
-      mainCaen: [null],
-      address: [''],
-    });
+  // addCompany(): void {
+  //   this.companies.push(companyGroup);
+  // }
 
-    this.companies.push(companyGroup);
+  // removeCompany(company: Company): void {
+  //   this.companies.removeAt(company.id);
+  // }
+
+
+  getErrorMessage(controlName: string, group?: FormGroup): string {
+    const control = this.form.get(controlName);
+    if (!control || !control.errors) return '';
+    if (control.errors['required']) return 'This field is required.';
+    if (control.errors['email']) return 'Invalid email address.';
+    if (control.errors['minlength']) return `Minimum length is ${control.errors['minlength'].requiredLength}.`;
+    if (control.errors['maxlength']) return `Maximum length is ${control.errors['maxlength'].requiredLength}.`;
+    if (control.errors['pattern']) return 'Invalid format.';
+    if (control.errors['min']) return `Value must be at least ${control.errors['min'].min}.`;
+    if (control.errors['max']) return `Value must be at most ${control.errors['max'].max}.`;
+    return 'Invalid field.';
   }
-
-  removeCompany(company: Company): void {
-    this.companies.removeAt(company.id);
-  }
-
   onSubmit(): void {
     console.log(111);
     

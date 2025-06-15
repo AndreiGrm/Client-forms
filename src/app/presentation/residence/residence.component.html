@@ -1,25 +1,28 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 p-4">
-    <div class="grid grid-cols-2 gap-4">
-        <h2 class="col-span-2 text-xl font-semibold">Residenceee</h2>
-        <div>
-          <button  (click)="previousPage()" class="bg-red-600 text-white px-6 py-2 roundedwe">Back</button>
-          <button  (click)="nextPage()" class="bg-green-600 text-white px-6 py-2 roundedwe">Next</button>
-        </div>
-        <input pInputText formControlName="country" placeholder="Country" class="w-full" />
-        <input pInputText formControlName="cityOrSector" placeholder="City / Sector" class="w-full" />
-        <input pInputText formControlName="type" placeholder="Type" class="w-full" />
-        <input pInputText formControlName="streetType" placeholder="Street Type" class="w-full" />
-        <input pInputText formControlName="streetName" placeholder="Street Name" class="w-full" />
-        <input pInputText formControlName="number" placeholder="Number" class="w-full" />
-        <input pInputText formControlName="building" placeholder="Building" class="w-full" />
-        <input pInputText formControlName="staircase" placeholder="Staircase" class="w-full" />
-        <input pInputText formControlName="floor" placeholder="Floor" class="w-full" />
-        <input pInputText formControlName="apartment" placeholder="Apartment" class="w-full" />
-
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="max-w-2xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-purple-300 tracking-tight">Residence</h2>
+    <div>
+      <button type="button" (click)="previousPage()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow transition mr-2">Back</button>
+      <button type="button" (click)="nextPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">Next</button>
     </div>
-  <div>
-    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">
-      Submit Client
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    @for (field of fields; track field.name) {
+      <div class="flex flex-col gap-1">
+        <label class="font-semibold text-gray-200 mb-1">{{field.label}}</label>
+        <input pInputText [formControlName]="field.name" [placeholder]="field.placeholder"
+          class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" />
+        @if (form.get(field.name)?.invalid && (form.get(field.name)?.dirty || form.get(field.name)?.touched)) {
+          <div class="text-red-400 text-xs mt-1">
+            {{ getErrorMessage(field.name) }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+  <div class="flex justify-end">
+    <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white px-8 py-2 rounded-lg shadow transition disabled:opacity-50" [disabled]="form.invalid">
+      Submit Residence
     </button>
   </div>
 </form>
