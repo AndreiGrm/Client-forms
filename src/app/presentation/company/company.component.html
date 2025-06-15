@@ -1,0 +1,22 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 p-4">
+  <h2 class="text-xl font-semibold mb-2">Companies</h2>
+  <div>
+    <button  (click)="previousPage()" class="bg-red-600 text-white px-6 py-2 roundedwe">Back</button>
+  </div>
+    @for (company of companies.controls; track company.get('id')?.value) {
+      <div [formGroup]="company" class="grid grid-cols-2 gap-4 mb-4 p-2 border rounded">
+        <input pInputText formControlName="name" placeholder="Company Name" class="w-full" />
+        <input pInputText formControlName="cui" placeholder="CUI" class="w-full" />
+        <input pInputText formControlName="tradeRegisterNumber" placeholder="Trade Register No." class="w-full" />
+        <input pInputText formControlName="mainCaen" placeholder="CAEN Code" class="w-full" />
+        <input pInputText formControlName="address" placeholder="Address" class="w-full col-span-2" />
+        <button type="button" (click)="removeCompany(company.value)" class="text-red-600 underline text-sm">Remove Company</button>
+      </div>
+
+    }
+
+
+    <button type="button" (click)="addCompany()" class="bg-blue-600 text-white px-4 py-2 rounded">
+      Add Company
+    </button>
+</form>

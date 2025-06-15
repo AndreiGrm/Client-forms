@@ -3,6 +3,9 @@
   <!-- IDENTIFICATION SECTION -->
   <div class="grid grid-cols-2 gap-4">
     <h2 class="col-span-2 text-xl font-semibold">Client</h2>
+    <div>
+      <button  (click)="nextPage()" class="bg-green-600 text-white px-6 py-2 roundedwe">Next</button>
+    </div>
     <div class="flex-auto">
       <label for="buttondisplay" class="font-bold block mb-2"> Id </label>
       <input pInputText formControlName="idType" placeholder="ID Type" class="w-full" />
@@ -69,43 +72,6 @@
     </div>
   </div>
 
-  <!-- RESIDENCE SECTION -->
-  <div class="grid grid-cols-2 gap-4">
-    <h2 class="col-span-2 text-xl font-semibold">Residence</h2>
-    <ng-container [formGroup]="residenceForm">
-      <input pInputText formControlName="country" placeholder="Country" class="w-full" />
-      <input pInputText formControlName="cityOrSector" placeholder="City / Sector" class="w-full" />
-      <input pInputText formControlName="type" placeholder="Type" class="w-full" />
-      <input pInputText formControlName="streetType" placeholder="Street Type" class="w-full" />
-      <input pInputText formControlName="streetName" placeholder="Street Name" class="w-full" />
-      <input pInputText formControlName="number" placeholder="Number" class="w-full" />
-      <input pInputText formControlName="building" placeholder="Building" class="w-full" />
-      <input pInputText formControlName="staircase" placeholder="Staircase" class="w-full" />
-      <input pInputText formControlName="floor" placeholder="Floor" class="w-full" />
-      <input pInputText formControlName="apartment" placeholder="Apartment" class="w-full" />
-    </ng-container>
-  </div>
-
-
-  <div>
-    <h2 class="text-xl font-semibold mb-2">Companies</h2>
-     @for (company of companies.controls; track company.get('id')?.value) {
-       <div [formGroup]="company" class="grid grid-cols-2 gap-4 mb-4 p-2 border rounded">
-         <input pInputText formControlName="name" placeholder="Company Name" class="w-full" />
-         <input pInputText formControlName="cui" placeholder="CUI" class="w-full" />
-         <input pInputText formControlName="tradeRegisterNumber" placeholder="Trade Register No." class="w-full" />
-         <input pInputText formControlName="mainCaen" placeholder="CAEN Code" class="w-full" />
-         <input pInputText formControlName="address" placeholder="Address" class="w-full col-span-2" />
-         <button type="button" (click)="removeCompany(company.value)" class="text-red-600 underline text-sm">Remove Company</button>
-       </div>
-
-     }
-
-
-    <button type="button" (click)="addCompany()" class="bg-blue-600 text-white px-4 py-2 rounded">
-      Add Companyw
-    </button>
-  </div>
 
   <!-- SUBMIT -->
   <div>
