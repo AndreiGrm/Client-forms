@@ -38,6 +38,8 @@ export default class ClientComponent implements OnInit {
       } as Client;
       console.log(this.client);
       
+    } else {
+      this.client = null
     }
 
   }

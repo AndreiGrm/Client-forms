@@ -41,17 +41,30 @@ export default class ResidenceComponent implements AfterViewInit {
   }
 
   fields = [
-    { name: 'country', label: 'Country', placeholder: 'Country', type: 'text' },
-    { name: 'cityOrSector', label: 'City / Sector', placeholder: 'City / Sector', type: 'text' },
-    { name: 'type', label: 'Type', placeholder: 'Type', type: 'text' },
-    { name: 'streetType', label: 'Street Type', placeholder: 'Street Type', type: 'text' },
-    { name: 'streetName', label: 'Street Name', placeholder: 'Street Name', type: 'text' },
-    { name: 'number', label: 'Number', placeholder: 'Number', type: 'text' },
-    { name: 'building', label: 'Building', placeholder: 'Building', type: 'text' },
-    { name: 'staircase', label: 'Staircase', placeholder: 'Staircase', type: 'text' },
-    { name: 'floor', label: 'Floor', placeholder: 'Floor', type: 'text' },
-    { name: 'apartment', label: 'Apartment', placeholder: 'Apartment', type: 'text' }
+    { name: 'country', label: 'Țară', placeholder: 'Țară', type: 'text' },
+    { name: 'cityOrSector', label: 'Oraș / Sector', placeholder: 'Oraș / Sector', type: 'text' },
+    { name: 'type', label: 'Tip locuință', placeholder: 'Tip locuință', type: 'text' },
+    { name: 'streetType', label: 'Tip stradă', placeholder: 'Tip stradă', type: 'text' },
+    { name: 'streetName', label: 'Nume stradă', placeholder: 'Nume stradă', type: 'text' },
+    { name: 'number', label: 'Număr', placeholder: 'Număr', type: 'text' },
+    { name: 'building', label: 'Bloc', placeholder: 'Bloc', type: 'text' },
+    { name: 'staircase', label: 'Scară', placeholder: 'Scară', type: 'text' },
+    { name: 'floor', label: 'Etaj', placeholder: 'Etaj', type: 'text' },
+    { name: 'apartment', label: 'Apartament', placeholder: 'Apartament', type: 'text' }
   ];
+
+  // fields = [
+  //   { name: 'country', label: 'Country', placeholder: 'Country', type: 'text' },
+  //   { name: 'cityOrSector', label: 'City / Sector', placeholder: 'City / Sector', type: 'text' },
+  //   { name: 'type', label: 'Type', placeholder: 'Type', type: 'text' },
+  //   { name: 'streetType', label: 'Street Type', placeholder: 'Street Type', type: 'text' },
+  //   { name: 'streetName', label: 'Street Name', placeholder: 'Street Name', type: 'text' },
+  //   { name: 'number', label: 'Number', placeholder: 'Number', type: 'text' },
+  //   { name: 'building', label: 'Building', placeholder: 'Building', type: 'text' },
+  //   { name: 'staircase', label: 'Staircase', placeholder: 'Staircase', type: 'text' },
+  //   { name: 'floor', label: 'Floor', placeholder: 'Floor', type: 'text' },
+  //   { name: 'apartment', label: 'Apartment', placeholder: 'Apartment', type: 'text' }
+  // ];
 
     ngAfterViewInit(): void {
       const savedData = localStorage.getItem('residence-data');

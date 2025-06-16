@@ -1,6 +1,86 @@
 <div class="client-details max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8 text-gray-100">
   <!-- HEADER -->
   <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-purple-300 tracking-tight">Date client</h2>
+    <div class="flex gap-2">
+      <button
+        type="button"
+        (click)="previousPage()"
+        class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow transition"
+      >
+        Înapoi
+      </button>
+    </div>
+  </div>
+  @if (client) {
+    <!-- Informații personale -->
+    <section class="mb-8">
+      <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
+        Informații personale
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+        <div><span class="font-medium text-gray-300">Tip act:</span> {{ client.idType }}</div>
+        <div><span class="font-medium text-gray-300">Nume:</span> {{ client.lastName }}</div>
+        <div><span class="font-medium text-gray-300">Prenume:</span> {{ client.firstName }}</div>
+        <div><span class="font-medium text-gray-300">Email:</span> {{ client.email }}</div>
+        <div><span class="font-medium text-gray-300">Telefon:</span> {{ client.phone }}</div>
+        <div><span class="font-medium text-gray-300">Cetățenie:</span> {{ client.citizenship }}</div>
+        <div><span class="font-medium text-gray-300">Data nașterii:</span> {{ client.birthDate }}</div>
+        <div><span class="font-medium text-gray-300">CNP:</span> {{ client.nationalId }}</div>
+        <div><span class="font-medium text-gray-300">Serie:</span> {{ client.series }}</div>
+        <div><span class="font-medium text-gray-300">Număr:</span> {{ client.number }}</div>
+        <div><span class="font-medium text-gray-300">Țara nașterii:</span> {{ client.birthCountry }}</div>
+        <div><span class="font-medium text-gray-300">Orașul nașterii:</span> {{ client.birthCity }}</div>
+        <div><span class="font-medium text-gray-300">Emitent:</span> {{ client.issuer }}</div>
+        <div><span class="font-medium text-gray-300">Data emiterii:</span> {{ client.issueDate }}</div>
+        <div><span class="font-medium text-gray-300">Data expirării:</span> {{ client.expiryDate }}</div>
+      </div>
+    </section>
+
+    <!-- Companie -->
+    @if (client.companies) {
+      <section class="mb-8">
+        <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
+          Companie
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+          <div><span class="font-medium text-gray-300">Denumire firmă:</span> {{ client.companies.name }}</div>
+          <div><span class="font-medium text-gray-300">CUI:</span> {{ client.companies.cui }}</div>
+          <div><span class="font-medium text-gray-300">Nr. Registrul Comerțului:</span> {{ client.companies.tradeRegisterNumber }}</div>
+          <div><span class="font-medium text-gray-300">Cod CAEN:</span> {{ client.companies.mainCaen }}</div>
+          <div><span class="font-medium text-gray-300">Adresă:</span> {{ client.companies.address }}</div>
+        </div>
+      </section>
+    }
+
+    <!-- Reședință -->
+    @if (client.residence) {
+      <section class="mb-8">
+        <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
+          Reședință
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+          <div><span class="font-medium text-gray-300">Țară:</span> {{ client.residence.country }}</div>
+          <div><span class="font-medium text-gray-300">Oraș / Sector:</span> {{ client.residence.cityOrSector }}</div>
+          <div><span class="font-medium text-gray-300">Nume stradă:</span> {{ client.residence.streetName }}</div>
+          <div><span class="font-medium text-gray-300">Număr:</span> {{ client.residence.number }}</div>
+          <div><span class="font-medium text-gray-300">Bloc:</span> {{ client.residence.building }}</div>
+          <div><span class="font-medium text-gray-300">Scară:</span> {{ client.residence.staircase }}</div>
+          <div><span class="font-medium text-gray-300">Etaj:</span> {{ client.residence.floor }}</div>
+          <div><span class="font-medium text-gray-300">Apartament:</span> {{ client.residence.apartment }}</div>
+        </div>
+      </section>
+    }
+  }
+</div>
+
+
+
+
+
+
+<!-- <div class="client-details max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8 text-gray-100">
+  <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-purple-300 tracking-tight">Client Data</h2>
     <div class="flex gap-2">
       <button
@@ -13,7 +93,7 @@
     </div>
   </div>
   @if (client) {
-    <!-- Personal Information -->
+
     <section class="mb-8">
       <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
         Personal Information
@@ -37,7 +117,7 @@
       </div>
     </section>
 
-    <!-- Company -->
+
     @if (client.companies) {
       <section class="mb-8">
         <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
@@ -53,7 +133,7 @@
       </section>
     }
 
-    <!-- Residence -->
+
     @if (client.residence) {
       <section class="mb-8">
         <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
@@ -72,4 +152,4 @@
       </section>
     }
   }
-</div>
+</div> -->
