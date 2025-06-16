@@ -1,0 +1,75 @@
+<div class="client-details max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8 text-gray-100">
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-purple-300 tracking-tight">Client Data</h2>
+    <div class="flex gap-2">
+      <button
+        type="button"
+        (click)="previousPage()"
+        class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow transition"
+      >
+        Back
+      </button>
+    </div>
+  </div>
+  @if (client) {
+    <!-- Personal Information -->
+    <section class="mb-8">
+      <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
+        Personal Information
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+        <div><span class="font-medium text-gray-300">ID Type:</span> {{ client.idType }}</div>
+        <div><span class="font-medium text-gray-300">Last Name:</span> {{ client.lastName }}</div>
+        <div><span class="font-medium text-gray-300">First Name:</span> {{ client.firstName }}</div>
+        <div><span class="font-medium text-gray-300">Email:</span> {{ client.email }}</div>
+        <div><span class="font-medium text-gray-300">Phone:</span> {{ client.phone }}</div>
+        <div><span class="font-medium text-gray-300">Citizenship:</span> {{ client.citizenship }}</div>
+        <div><span class="font-medium text-gray-300">Birth Date:</span> {{ client.birthDate  }}</div>
+        <div><span class="font-medium text-gray-300">National ID:</span> {{ client.nationalId }}</div>
+        <div><span class="font-medium text-gray-300">Series:</span> {{ client.series }}</div>
+        <div><span class="font-medium text-gray-300">Number:</span> {{ client.number }}</div>
+        <div><span class="font-medium text-gray-300">Birth Country:</span> {{ client.birthCountry }}</div>
+        <div><span class="font-medium text-gray-300">Birth City:</span> {{ client.birthCity }}</div>
+        <div><span class="font-medium text-gray-300">Issuer:</span> {{ client.issuer }}</div>
+        <div><span class="font-medium text-gray-300">Issue Date:</span> {{ client.issueDate  }}</div>
+        <div><span class="font-medium text-gray-300">Expiry Date:</span> {{ client.expiryDate  }}</div>
+      </div>
+    </section>
+
+    <!-- Company -->
+    @if (client.companies) {
+      <section class="mb-8">
+        <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
+          Company
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+          <div><span class="font-medium text-gray-300">Name:</span> {{ client.companies.name }}</div>
+          <div><span class="font-medium text-gray-300">CUI:</span> {{ client.companies.cui }}</div>
+          <div><span class="font-medium text-gray-300">Trade Register Number:</span> {{ client.companies.tradeRegisterNumber }}</div>
+          <div><span class="font-medium text-gray-300">CAEN Code:</span> {{ client.companies.mainCaen }}</div>
+          <div><span class="font-medium text-gray-300">Address:</span> {{ client.companies.address }}</div>
+        </div>
+      </section>
+    }
+
+    <!-- Residence -->
+    @if (client.residence) {
+      <section class="mb-8">
+        <h3 class="text-xl font-semibold text-purple-200 mb-4 border-b border-gray-700 pb-2">
+          Residence
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+          <div><span class="font-medium text-gray-300">Country:</span> {{ client.residence.country }}</div>
+          <div><span class="font-medium text-gray-300">City:</span> {{ client.residence.cityOrSector }}</div>
+          <div><span class="font-medium text-gray-300">Street:</span> {{ client.residence.streetName }}</div>
+          <div><span class="font-medium text-gray-300">Number:</span> {{ client.residence.number }}</div>
+          <div><span class="font-medium text-gray-300">Postal Code:</span> {{ client.residence.building }}</div>
+          <div><span class="font-medium text-gray-300">Staircase:</span> {{ client.residence.staircase }}</div>
+          <div><span class="font-medium text-gray-300">Floor:</span> {{ client.residence.floor }}</div>
+          <div><span class="font-medium text-gray-300">Apartment:</span> {{ client.residence.apartment }}</div>
+        </div>
+      </section>
+    }
+  }
+</div>

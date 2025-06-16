@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   templateUrl: './residence.component.html',
   styleUrl: './residence.component.css'
 })
-export default class ResidenceComponent {
+export default class ResidenceComponent implements AfterViewInit {
   private fb = inject(FormBuilder).nonNullable;
   router = inject(Router)
   form = this.fb.group({
@@ -33,6 +33,13 @@ export default class ResidenceComponent {
     apartment: [null, [Validators.min(1)]],
   })
 
+  constructor() {
+    this.form.valueChanges.subscribe(value => {
+      localStorage.setItem('residence-data', JSON.stringify(value));
+      console.log('Form data saved to localStorage:', value);
+    })
+  }
+
   fields = [
     { name: 'country', label: 'Country', placeholder: 'Country', type: 'text' },
     { name: 'cityOrSector', label: 'City / Sector', placeholder: 'City / Sector', type: 'text' },
@@ -45,6 +52,26 @@ export default class ResidenceComponent {
     { name: 'floor', label: 'Floor', placeholder: 'Floor', type: 'text' },
     { name: 'apartment', label: 'Apartment', placeholder: 'Apartment', type: 'text' }
   ];
+
+    ngAfterViewInit(): void {
+      const savedData = localStorage.getItem('residence-data');
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+
+          const dateFields = ['birthDate', 'issueDate', 'expiryDate'];
+          for (const field of dateFields) {
+            if (parsed[field]) {
+              parsed[field] = new Date(parsed[field]);
+            }
+          }
+
+          this.form.patchValue(parsed);
+        } catch (err) {
+          console.error('Errore parsing dati salvati:', err);
+        }
+      }
+    }
 
   getErrorMessage(controlName: string): string {
   const control = this.form.get(controlName);
@@ -60,9 +87,12 @@ export default class ResidenceComponent {
   }
 
   onSubmit(): void {
-    console.log(111);
-
+    if (this.form.valid) {
+      this.router.navigate(['../company']);
+    }
   }
+
+  
   nextPage () {
     this.router.navigate(['../company']);
   }
