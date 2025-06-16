@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,28 +21,26 @@ import { Company } from '../../model/company.model';
     DatePickerModule
   ]
 })
-export default class ClientFormComponent {
+export default class ClientFormComponent implements AfterViewInit {
   private fb = inject(FormBuilder).nonNullable;
   router = inject(Router)
   form = this.fb.group({
-      idType: ['', Validators.required],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s]+$/)]],
-      citizenship: ['', Validators.required],
-      birthDate: ['', Validators.required],
-      nationalId: ['', [Validators.required, Validators.pattern(/^[0-9]{13}$/)]],
-      series: ['', [Validators.required, Validators.minLength(2)]],
-      number: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
-      birthCountry: ['', Validators.required],
-      birthCity: ['', Validators.required],
-      issuer: ['', Validators.required],
-      issueDate: ['', Validators.required],
-      expiryDate: ['', Validators.required],
-      companies: [[], Validators.required],
-      residence: [null, Validators.required]
-    });
+    idType: ['', Validators.required],
+    lastName: ['', [Validators.required, Validators.minLength(2)]],
+    firstName: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s]+$/)]],
+    citizenship: ['', Validators.required],
+    birthDate: [null, Validators.required],
+    nationalId: ['', [Validators.required, Validators.pattern(/^[0-9]{13}$/)]],
+    series: ['', [Validators.required, Validators.minLength(2)]],
+    number: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+    birthCountry: ['', Validators.required],
+    birthCity: ['', Validators.required],
+    issuer: ['', Validators.required],
+    issueDate: [null, Validators.required],
+    expiryDate: [null, Validators.required]
+  });
 
   fields = [
     { name: 'idType', label: 'ID Type', placeholder: 'ID Type', type: 'text' },
@@ -62,31 +60,67 @@ export default class ClientFormComponent {
     { name: 'expiryDate', label: 'Expiry Date', placeholder: 'Expiry Date', type: 'date' }
   ];
 
-  
+  constructor() {
+    this.form.valueChanges.subscribe(value => {
+      localStorage.setItem('client-data', JSON.stringify(value));
+      console.log('Form data saved to localStorage:', value);
+    })
+  }
 
+  ngAfterViewInit(): void {
+    const savedData = localStorage.getItem('client-data');
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
 
+        const dateFields = ['birthDate', 'issueDate', 'expiryDate'];
+        for (const field of dateFields) {
+          if (parsed[field]) {
+            parsed[field] = new Date(parsed[field]);
+          }
+        }
+
+        this.form.patchValue(parsed);
+      } catch (err) {
+        console.error('Errore parsing dati salvati:', err);
+      }
+    }
+  }
 
   onSubmit(): void {
-    console.log(111);
-    
-    // if (this.form.valid) {
-    //   const clientData: Client = this.form.value;
-    //   console.log('Form Submitted:', clientData);
-    // }
+    if (this.form.valid) {
+      this.router.navigate(['../residence']);
+    }
   }
 
+
+
   getErrorMessage(controlName: string): string {
-    const control = this.form.get(controlName);
-    if (!control || !control.errors) return '';
-    if (control.errors['required']) return 'This field is required.';
-    if (control.errors['email']) return 'Invalid email address.';
-    if (control.errors['minlength']) return `Minimum length is ${control.errors['minlength'].requiredLength}.`;
-    if (control.errors['maxlength']) return `Maximum length is ${control.errors['maxlength'].requiredLength}.`;
-    if (control.errors['pattern']) return 'Invalid format.';
-    if (control.errors['min']) return `Value must be at least ${control.errors['min'].min}.`;
-    if (control.errors['max']) return `Value must be at most ${control.errors['max'].max}.`;
-    return 'Invalid field.';
+  const control = this.form.get(controlName);
+  if (!control || !control.errors) return '';
+
+  const errorKeys = Object.keys(control.errors);
+  if (errorKeys.length === 0) return '';
+
+  switch (errorKeys[0]) {
+    case 'required':
+      return 'This field is required.';
+    case 'email':
+      return 'Invalid email address.';
+    case 'minlength':
+      return `Minimum length is ${control.errors['minlength'].requiredLength}.`;
+    case 'maxlength':
+      return `Maximum length is ${control.errors['maxlength'].requiredLength}.`;
+    case 'pattern':
+      return 'Invalid format.';
+    case 'min':
+      return `Value must be at least ${control.errors['min'].min}.`;
+    case 'max':
+      return `Value must be at most ${control.errors['max'].max}.`;
+    default:
+      return 'Invalid field.';
   }
+}
 
   nextPage () {
     this.router.navigate(['../residence']);

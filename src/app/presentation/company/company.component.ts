@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -17,7 +17,8 @@ import { Router } from '@angular/router';
   templateUrl: './company.component.html',
   styleUrl: './company.component.css'
 })
-export default class CompanyComponent implements OnInit {
+
+export default class CompanyComponent implements AfterViewInit {
   private fb = inject(FormBuilder).nonNullable;
   router = inject(Router)
   companies: Company[] = [];
@@ -31,6 +32,7 @@ export default class CompanyComponent implements OnInit {
   });
 
   fields = [
+    { name: 'id', label: 'Id', placeholder: 'Id...', type: 'number' },
     { name: 'name', label: 'Company Name', placeholder: 'Company Name', type: 'text' },
     { name: 'cui', label: 'CUI', placeholder: 'CUI', type: 'text' },
     { name: 'tradeRegisterNumber', label: 'Trade Register No.', placeholder: 'Trade Register No.', type: 'text' },
@@ -38,11 +40,32 @@ export default class CompanyComponent implements OnInit {
     { name: 'address', label: 'Address', placeholder: 'Address', type: 'text' }
   ];
 
+  constructor() {
+    this.form.valueChanges.subscribe(value => {
+      localStorage.setItem('company-data', JSON.stringify(value));
+      console.log('Form data saved to localStorage:', value);
+    })
+  }
 
-  ngOnInit(): void {
-    // this.addCompany()
-    console.log(1)
-    
+
+  ngAfterViewInit(): void {
+    const savedData = localStorage.getItem('company-data');
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+
+        const dateFields = ['birthDate', 'issueDate', 'expiryDate'];
+        for (const field of dateFields) {
+          if (parsed[field]) {
+            parsed[field] = new Date(parsed[field]);
+          }
+        }
+
+        this.form.patchValue(parsed);
+      } catch (err) {
+        console.error('Errore parsing dati salvati:', err);
+      }
+    }
   }
   
 
@@ -68,12 +91,16 @@ export default class CompanyComponent implements OnInit {
     return 'Invalid field.';
   }
   onSubmit(): void {
+    if (this.form.valid) {
+      this.router.navigate(['../client']);
+    }
     console.log(111);
     
-    // if (this.form.valid) {
-    //   const clientData: Client = this.form.value;
-    //   console.log('Form Submitted:', clientData);
-    // }
+  }
+
+    
+  nextPage () {
+    this.router.navigate(['../client']);
   }
 
   previousPage () {
