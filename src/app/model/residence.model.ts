@@ -1,4 +1,6 @@
 export interface Residence {
+  residence_id: number;
+  client_id: number;
   country: string;
   cityOrSector: string;
   type: string; // e.g., Home, Apartment, etc.
@@ -9,4 +11,5 @@ export interface Residence {
   staircase: string;
   floor: number;
   apartment: number;
+  created_at: Date;
 }
