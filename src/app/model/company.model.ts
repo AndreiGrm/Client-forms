@@ -1,5 +1,5 @@
 export interface Company {
-  company_id: number;
+  id: number;
   client_id: number;
   company_name: string;
   cui: number; // Unique Identification Code

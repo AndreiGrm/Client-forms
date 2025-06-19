@@ -5,6 +5,13 @@
       <button
         type="button"
         class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-lg shadow transition"
+        (click)="goHome()"
+      >
+        Home
+      </button>
+      <button
+        type="button"
+        class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-lg shadow transition"
         (click)="addClient()"
       >
         Adaugă client
@@ -31,7 +38,7 @@
     </ng-template>
     <ng-template #body let-client>
       <tr>
-        <td>{{ client.client_id }}</td>
+        <td>{{ client.id }}</td>
         <td>{{ client.firstName }}</td>
         <td>{{ client.lastName }}</td>
         <td>{{ client.email }}</td>

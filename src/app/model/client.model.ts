@@ -2,7 +2,7 @@ import { Company } from "./company.model";
 import { Residence } from "./residence.model";
 
 export interface Client {
-  client_id: number;
+  id: number;
   account_id: number;
   idType: string;
   lastName: string;

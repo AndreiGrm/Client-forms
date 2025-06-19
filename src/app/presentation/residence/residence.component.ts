@@ -111,6 +111,6 @@ export default class ResidenceComponent implements AfterViewInit {
   }
 
   previousPage () {
-    this.router.navigate(['']);
+    this.router.navigate(['client-form']);
   }
 }

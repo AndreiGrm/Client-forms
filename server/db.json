@@ -1,7 +1,7 @@
 {
   "companies": [
     {
-      "company_id": 1,
+      "id": "1",
       "client_id": 1,
       "company_name": "SC Exemplu SRL",
       "cui": 12345678,
@@ -13,7 +13,7 @@
   ],
   "clients": [
     {
-      "client_id": 1,
+      "id": "1",
       "account_id": 1,
       "firstName": "Andrei",
       "lastName": "Gramada",
@@ -30,11 +30,47 @@
       "issuer": "SPCLEP Sector 1",
       "issueDate": "2015-05-10T00:00:00.000Z",
       "expiryDate": "2035-05-10T00:00:00.000Z"
+    },
+    {
+      "id": "6172",
+      "idType": "12312312312",
+      "lastName": "Gramadadw",
+      "firstName": "Andrei",
+      "email": "andrei.gramada00@gmail.com",
+      "phone": "3891398288",
+      "citizenship": "IT",
+      "birthDate": "2000-11-29T23:00:00.000Z",
+      "nationalId": "1231231233333",
+      "series": "123",
+      "number": "321",
+      "birthCountry": "IT",
+      "birthCity": "Modena",
+      "issuer": "Castelvetro di Modena",
+      "issueDate": "2025-06-16T22:00:00.000Z",
+      "expiryDate": "2025-06-17T22:00:00.000Z"
+    },
+    {
+      "id": "9c60",
+      "idType": "12312312312",
+      "lastName": "Gramadadw",
+      "firstName": "Andrei",
+      "email": "andrei.gramada00@gmail.com",
+      "phone": "3891398288",
+      "citizenship": "IT",
+      "birthDate": "2000-11-29T23:00:00.000Z",
+      "nationalId": "1231231233333",
+      "series": "123",
+      "number": "321",
+      "birthCountry": "IT",
+      "birthCity": "Modena",
+      "issuer": "Castelvetro di Modena",
+      "issueDate": "2025-06-16T22:00:00.000Z",
+      "expiryDate": "2025-06-17T22:00:00.000Z"
     }
   ],
   "residences": [
     {
-      "id": 1,
+      "id": "1",
       "country": "RO",
       "cityOrSector": "București",
       "type": "Apartament",
@@ -49,14 +85,14 @@
   ],
   "accounts": [
     {
-      "account_id": 1,
+      "id": "1",
       "account_name": "Cont Principal",
       "created_at": "2024-06-18T10:00:00.000Z"
     }
   ],
   "users": [
     {
-      "user_id": 1,
+      "id": "1",
       "user_name": "admin",
       "account_id": 1,
       "pw": "admin123",

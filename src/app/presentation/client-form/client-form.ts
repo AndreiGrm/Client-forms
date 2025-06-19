@@ -9,6 +9,8 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
 import { Country, City } from 'country-state-city';
 import { HttpService } from '../../services/http.service';
+import { ClientService } from '../../services/client.service';
+import { Client } from '../../model/client.model';
 
 
 @Component({
@@ -28,6 +30,7 @@ export default class ClientFormComponent implements AfterViewInit {
   http = inject(HttpService)
   selectedCity: string | undefined;
   private fb = inject(FormBuilder).nonNullable;
+  clientService = inject(ClientService);
   router = inject(Router)
   form = this.fb.group({
     idType: ['', Validators.required],
@@ -124,7 +127,10 @@ export default class ClientFormComponent implements AfterViewInit {
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.router.navigate(['../residence']);
+      console.log(this.form.value);
+      
+      this.clientService.add(this.form.value)
+      // this.router.navigate(['../residence']);
     }
   }
 
@@ -158,7 +164,7 @@ export default class ClientFormComponent implements AfterViewInit {
   }
 
   nextPage () {
-    this.router.navigate(['../residence']);
+    this.router.navigate(['/residence']);
   }
 
   clientsPage () {

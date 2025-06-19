@@ -7,5 +7,7 @@ import { HttpService } from './http.service';
 export class AccountService {
   http = inject(HttpService);
 
-
+  getAccount() {
+    return this.http.load('accounts/1');
+  }
 }

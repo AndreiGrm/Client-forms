@@ -45,7 +45,7 @@ export default class ClientComponent implements OnInit {
   }
 
   previousPage () {
-    this.router.navigate(['']);
+    this.router.navigate(['client-form']);
   }
 
 }

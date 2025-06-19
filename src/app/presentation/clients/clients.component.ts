@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ClientService } from '../../services/client.service';
 import { Client } from '../../model/client.model';
 import { TableModule } from 'primeng/table';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-clients',
@@ -11,9 +12,11 @@ import { TableModule } from 'primeng/table';
 })
 export default class ClientsComponent implements OnInit {
   clients: Client[] = [];
+  router = inject(Router)
   clientService = inject(ClientService);
 
   ngOnInit () {
+    console.log(this)
     this.clientService.load().subscribe({
        next: (data) => {
           this.clients = data as Client[];
@@ -25,7 +28,16 @@ export default class ClientsComponent implements OnInit {
   }
 
   deleteClient (client: Client):void {
-    console.log('delete client');
+    console.log('delete client', client);
+    this.clientService.delete(client.id).subscribe({
+      next: () => {
+        this.clients = this.clients.filter(c => c.id !== client.id);
+        console.log('Client deleted successfully');
+      },
+      error: (error) => {
+        console.error('Error deleting client:', error);
+      }
+    });
   }
 
   addClient (): void {
@@ -34,5 +46,9 @@ export default class ClientsComponent implements OnInit {
 
   inviteClient () {
     console.log('invite client');
+  }
+
+  goHome (): void {
+    this.router.navigate(['client-form']);
   }
 }

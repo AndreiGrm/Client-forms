@@ -1,5 +1,5 @@
 export interface Residence {
-  residence_id: number;
+  id: number;
   client_id: number;
   country: string;
   cityOrSector: string;

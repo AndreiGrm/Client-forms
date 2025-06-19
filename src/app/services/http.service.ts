@@ -9,56 +9,28 @@ export class HttpService {
   path = 'http://localhost:3000/';
 
   load (param: string) {
-    let response = null
-    return this.http.get(this.path + param + '')
-    // .subscribe({
-    //   next: (data) => {
-    //     console.log(data);
-        
-    //     response = {
-    //       status: 200,
-    //       data: data
-    //     };
-    //   },
-    //   error: (error) => {
-    //     console.error("Error:", error);
-    //     response = {
-    //       status: 404,
-    //       message: 'Error while loading record'
-    //     };
-    //   }
-    // });
-    // return response;
+    return this.http.get(this.path + param)
   }
 
-  // save<T>(param: string, newValue: T): Response<T> | ResponseError {
-  //   try {
-  //     const response = this.load<T>(param);
+  add<T>(param: string, newValue: T) {
+    console.log('wewe');
+    
+     let a =  this.http.post(this.path + param, newValue)
+     .subscribe({
+            next: (data) => {
+               console.log(data);
+               
+             },
+             error: (error) => {
+               console.error('Error loading clients:', error);
+             }
+         });
+     return a
+  }
 
-  //     if (this.isResponseError(response)) {
-  //       throw new Error();
-  //     }
-
-  //     const elements = response.data;
-
-  //     elements.push(newValue)
-
-  //     localStorage.setItem(param, JSON.stringify(elements));
-
-  //     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Record added' });
-  //     return {
-  //       status: 200,
-  //       data: newValue
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error while adding record' });
-  //     return {
-  //       status: 404,
-  //       message: 'Error while adding record'
-  //     }
-  //   }
-  // }
+  delete (param: string, id: number) {
+    return this.http.delete(this.path + param + '/' + id)
+  }
 
   // update<T extends { id: number }>(param: string, updatedValue: T, silentUpdate: boolean = false): Response<T> | ResponseError {
   //   try {

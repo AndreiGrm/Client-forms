@@ -1,5 +1,5 @@
 export interface User {
-  user_id: number;
+  id: number;
   user_name: string;
   account_id: number;
   is_admin: boolean;
