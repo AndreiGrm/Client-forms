@@ -5,4 +5,5 @@ export const routes: Routes = [
     { path: 'residence', loadComponent: () => import('./presentation/residence/residence.component') },
     { path: 'company', loadComponent: () => import('./presentation/company/company.component') },
     { path: 'client', loadComponent: () => import('./presentation/client/client.component') },
+    { path: 'clients', loadComponent: () => import('./presentation/clients/clients.component') },
 ];
