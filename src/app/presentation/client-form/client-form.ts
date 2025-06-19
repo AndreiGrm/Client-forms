@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
 import { Country, City } from 'country-state-city';
+import { HttpService } from '../../services/http.service';
 
 
 @Component({
@@ -24,7 +25,7 @@ import { Country, City } from 'country-state-city';
   ]
 })
 export default class ClientFormComponent implements AfterViewInit {
-
+  http = inject(HttpService)
   selectedCity: string | undefined;
   private fb = inject(FormBuilder).nonNullable;
   router = inject(Router)
@@ -158,6 +159,10 @@ export default class ClientFormComponent implements AfterViewInit {
 
   nextPage () {
     this.router.navigate(['../residence']);
+  }
+
+  clientsPage () {
+    this.router.navigate(['/clients']);
   }
 }
 
