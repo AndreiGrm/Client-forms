@@ -45,7 +45,17 @@ export default class HomepageComponent implements OnInit {
             },
             {
                 separator: true
-            }
+            },
+            {
+                label: 'Account',
+                items: [
+                    {
+                        label: 'Logout',
+                        icon: 'pi pi-sign-out',
+                        routerLink: ['/'] 
+                    }
+                ]
+            },
         ];
     }
   
