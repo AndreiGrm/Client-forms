@@ -3,6 +3,9 @@
   <!-- HEADER -->
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-purple-300 tracking-tight">Client Registration</h2>
+    <button type="button" (click)="clientsPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
+      Clients
+    </button>
     <button type="button" (click)="nextPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
       Next
     </button>
@@ -17,8 +20,15 @@
           @case ('date') {
             <p-datepicker  [formControlName]="field.name" class="w-full  text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition"  />
           }
-          @case ('email') {
-            <input pInputText [formControlName]="field.name" type="email" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" [placeholder]="field.placeholder" />
+          @case ('select') {
+            <p-select
+              [options]="getOptions(field.name)"
+              [formControlName]="field.name"
+              optionLabel="name"
+              optionValue="code"
+              placeholder="Select a City"
+              class="w-full md:w-56"
+            />
           }
           @default {
             <input pInputText [formControlName]="field.name" [placeholder]="field.placeholder" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" />

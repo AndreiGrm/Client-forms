@@ -33,12 +33,21 @@ export default class CompanyComponent implements AfterViewInit {
 
   fields = [
     { name: 'id', label: 'Id', placeholder: 'Id...', type: 'number' },
-    { name: 'name', label: 'Company Name', placeholder: 'Company Name', type: 'text' },
+    { name: 'name', label: 'Denumire firmă', placeholder: 'Denumire firmă', type: 'text' },
     { name: 'cui', label: 'CUI', placeholder: 'CUI', type: 'text' },
-    { name: 'tradeRegisterNumber', label: 'Trade Register No.', placeholder: 'Trade Register No.', type: 'text' },
-    { name: 'mainCaen', label: 'CAEN Code', placeholder: 'CAEN Code', type: 'text' },
-    { name: 'address', label: 'Address', placeholder: 'Address', type: 'text' }
+    { name: 'tradeRegisterNumber', label: 'Nr. Registrul Comerțului', placeholder: 'Nr. Registrul Comerțului', type: 'text' },
+    { name: 'mainCaen', label: 'Cod CAEN', placeholder: 'Cod CAEN', type: 'text' },
+    { name: 'address', label: 'Adresă', placeholder: 'Adresă', type: 'text' }
   ];
+
+  // fields = [
+  //   { name: 'id', label: 'Id', placeholder: 'Id...', type: 'number' },
+  //   { name: 'name', label: 'Company Name', placeholder: 'Company Name', type: 'text' },
+  //   { name: 'cui', label: 'CUI', placeholder: 'CUI', type: 'text' },
+  //   { name: 'tradeRegisterNumber', label: 'Trade Register No.', placeholder: 'Trade Register No.', type: 'text' },
+  //   { name: 'mainCaen', label: 'CAEN Code', placeholder: 'CAEN Code', type: 'text' },
+  //   { name: 'address', label: 'Address', placeholder: 'Address', type: 'text' }
+  // ];
 
   constructor() {
     this.form.valueChanges.subscribe(value => {
@@ -92,7 +101,7 @@ export default class CompanyComponent implements AfterViewInit {
   }
   onSubmit(): void {
     if (this.form.valid) {
-      this.router.navigate(['../client']);
+      this.router.navigate(['homepage/client']);
     }
     console.log(111);
     
@@ -100,10 +109,10 @@ export default class CompanyComponent implements AfterViewInit {
 
     
   nextPage () {
-    this.router.navigate(['../client']);
+    this.router.navigate(['homepage/client']);
   }
 
   previousPage () {
-    this.router.navigate(['../residence']);
+    this.router.navigate(['homepage/residence']);
   }
 }

@@ -2,6 +2,8 @@ import { Company } from "./company.model";
 import { Residence } from "./residence.model";
 
 export interface Client {
+  id: number;
+  account_id: number;
   idType: string;
   lastName: string;
   firstName: string;
@@ -9,7 +11,7 @@ export interface Client {
   phone: string;
   citizenship: string;
   birthDate: Date;
-  nationalId: number; // CNP
+  nationalId: number;
   series: string;
   number: number;
   birthCountry: string;
@@ -17,7 +19,7 @@ export interface Client {
   issuer: string;
   issueDate: Date;
   expiryDate: Date;
-
+  created_at: Date;
   companies: Company;
   residence: Residence;
 }

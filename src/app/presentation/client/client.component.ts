@@ -38,12 +38,14 @@ export default class ClientComponent implements OnInit {
       } as Client;
       console.log(this.client);
       
+    } else {
+      this.client = null
     }
 
   }
 
   previousPage () {
-    this.router.navigate(['']);
+    this.router.navigate(['client-form']);
   }
 
 }
