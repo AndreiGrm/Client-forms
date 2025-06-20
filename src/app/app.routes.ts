@@ -11,9 +11,9 @@ export const routes: Routes = [
             { path: 'client-form', loadComponent: () => import('./presentation/client-form/client-form') },
             { path: 'residence', loadComponent: () => import('./presentation/residence/residence.component') },
             { path: 'company', loadComponent: () => import('./presentation/company/company.component') },
+            { path: 'client', loadComponent: () => import('./presentation/client/client.component') },
         ]
     },
     // { path: 'client-form', loadComponent: () => import('./presentation/client-form/client-form') },
-    { path: 'client', loadComponent: () => import('./presentation/client/client.component') },
     // { path: 'clients', loadComponent: () => import('./presentation/clients/clients.component') },
 ];

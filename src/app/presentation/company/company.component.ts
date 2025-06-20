@@ -101,7 +101,7 @@ export default class CompanyComponent implements AfterViewInit {
   }
   onSubmit(): void {
     if (this.form.valid) {
-      this.router.navigate(['../client']);
+      this.router.navigate(['homepage/client']);
     }
     console.log(111);
     
@@ -109,10 +109,10 @@ export default class CompanyComponent implements AfterViewInit {
 
     
   nextPage () {
-    this.router.navigate(['../client']);
+    this.router.navigate(['homepage/client']);
   }
 
   previousPage () {
-    this.router.navigate(['../residence']);
+    this.router.navigate(['homepage/residence']);
   }
 }

@@ -101,16 +101,16 @@ export default class ResidenceComponent implements AfterViewInit {
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.router.navigate(['../company']);
+      this.router.navigate(['homepage/company']);
     }
   }
 
   
   nextPage () {
-    this.router.navigate(['../company']);
+    this.router.navigate(['homepage/company']);
   }
 
   previousPage () {
-    this.router.navigate(['client-form']);
+    this.router.navigate(['homepage/client-form']);
   }
 }

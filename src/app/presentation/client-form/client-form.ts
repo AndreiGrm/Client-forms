@@ -164,11 +164,11 @@ export default class ClientFormComponent implements AfterViewInit {
   }
 
   nextPage () {
-    this.router.navigate(['/residence']);
+    this.router.navigate(['homepage/residence']);
   }
 
   clientsPage () {
-    this.router.navigate(['/clients']);
+    this.router.navigate(['homepage/clients']);
   }
 }
 

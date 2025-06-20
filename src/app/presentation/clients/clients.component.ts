@@ -49,6 +49,6 @@ export default class ClientsComponent implements OnInit {
   }
 
   goHome (): void {
-    this.router.navigate(['client-form']);
+    this.router.navigate(['homepage/client-form']);
   }
 }
