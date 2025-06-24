@@ -1,12 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { environment } from '../../environments/environment.prod';
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class HttpService {
   http = inject(HttpClient);
-  path = 'http://localhost:3000/';
+  path = environment.apiUrl;
 
   load (param: string) {
     return this.http.get(this.path + param)
@@ -15,7 +18,7 @@ export class HttpService {
   add<T>(param: string, newValue: T) {
     console.log('wewe');
     
-     let a =  this.http.post(this.path + param, newValue)
+     return this.http.post(this.path + param, newValue)
      .subscribe({
             next: (data) => {
                console.log(data);
@@ -25,7 +28,6 @@ export class HttpService {
                console.error('Error loading clients:', error);
              }
          });
-     return a
   }
 
   delete (param: string, id: number) {
