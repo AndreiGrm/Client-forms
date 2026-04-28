@@ -6,10 +6,8 @@ import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
 import { Country } from 'country-state-city';
-import { switchMap } from 'rxjs';
 import { InvitationService } from '../../services/invitation.service';
 import { EmailService } from '../../services/email.service';
-import { ClientService } from '../../services/client.service';
 
 interface CountryOption {
   name: string;
@@ -28,7 +26,7 @@ export default class RegisterComponent implements OnInit {
   private route             = inject(ActivatedRoute);
   private invitationService = inject(InvitationService);
   private emailService      = inject(EmailService);
-  private clientService     = inject(ClientService);
+
 
   tokenValid = signal<boolean | null>(null);
   submitted  = signal(false);
@@ -146,15 +144,13 @@ export default class RegisterComponent implements OnInit {
     this.sending.set(true);
     this.sendError.set('');
 
-    const clientPayload = {
+    const clientPayload: Record<string, unknown> = {
       ...this.values(),
       account_id: this.accountId,
       created_at: new Date().toISOString()
     };
 
-    this.clientService.add(clientPayload as any).pipe(
-      switchMap(() => this.emailService.sendRegistrationConfirmation(clientPayload as Record<string, unknown>))
-    ).subscribe({
+    this.emailService.sendRegistrationConfirmation(clientPayload).subscribe({
       next: () => {
         this.sending.set(false);
         this.submitted.set(true);
