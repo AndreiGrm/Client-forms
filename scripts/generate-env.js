@@ -6,8 +6,9 @@ const path = require('path');
 
 const outPath = path.join(__dirname, '..', 'src', 'environments', 'environment.prod.ts');
 
-// Locally the file already exists (gitignored) — only generate on CI/Vercel
-if (fs.existsSync(outPath) && !process.env.CI && !process.env.VERCEL) {
+// If the file already exists (e.g. local dev), skip generation.
+// On Vercel the file won't exist (gitignored), so generation runs from env vars.
+if (fs.existsSync(outPath)) {
   console.log('environment.prod.ts already exists, skipping generation.');
   process.exit(0);
 }
