@@ -10,7 +10,7 @@ import { RouterOutlet } from '@angular/router'
 
 import { AvatarModule } from 'primeng/avatar';
 @Component({
-  selector: 'app-residence',
+  selector: 'app-homepage',
   imports: [
     InputTextModule, MenuModule, BadgeModule, RippleModule, AvatarModule, RouterOutlet, RouterModule
   ],

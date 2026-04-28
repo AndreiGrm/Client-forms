@@ -12,27 +12,24 @@ import { Router } from '@angular/router';
 })
 export default class ClientsComponent implements OnInit {
   clients: Client[] = [];
-  router = inject(Router)
+  router = inject(Router);
   clientService = inject(ClientService);
 
-  ngOnInit () {
-    console.log(this)
+  ngOnInit() {
     this.clientService.load().subscribe({
-       next: (data) => {
-          this.clients = data as Client[];
-        },
-        error: (error) => {
-          console.error('Error loading clients:', error);
-        }
+      next: (data) => {
+        this.clients = data as Client[];
+      },
+      error: (error) => {
+        console.error('Error loading clients:', error);
+      }
     });
   }
 
-  deleteClient (client: Client):void {
-    console.log('delete client', client);
+  deleteClient(client: Client): void {
     this.clientService.delete(client.id).subscribe({
       next: () => {
         this.clients = this.clients.filter(c => c.id !== client.id);
-        console.log('Client deleted successfully');
       },
       error: (error) => {
         console.error('Error deleting client:', error);
@@ -40,15 +37,7 @@ export default class ClientsComponent implements OnInit {
     });
   }
 
-  addClient (): void {
-    console.log('add client');
-  }
-
-  inviteClient () {
-    console.log('invite client');
-  }
-
-  goHome (): void {
+  goHome(): void {
     this.router.navigate(['homepage/client-form']);
   }
 }

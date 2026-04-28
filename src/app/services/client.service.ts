@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpService } from './http.service';
 import { Client } from '../model/client.model';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,17 +8,15 @@ import { Observable } from 'rxjs';
 export class ClientService {
   http = inject(HttpService);
 
-  load () {
-    return this.http.load('clients')
+  load() {
+    return this.http.load('clients');
   }
 
-  add<Client>(client: Client) {
-    
-    return this.http.add('clients', client);
+  add(client: Partial<Client>) {
+    return this.http.add<Partial<Client>>('clients', client);
   }
 
-  delete (id: number) {
+  delete(id: number) {
     return this.http.delete('clients', id);
   }
-
 }

@@ -1,59 +1,123 @@
-# ClientForms
+# Client Forms
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.15.
+Angular 19 application for multi-step client registration and management.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+| Layer | Technology |
+|---|---|
+| Framework | Angular 19 (standalone components) |
+| UI Library | PrimeNG 19 + Aura theme |
+| Styling | Tailwind CSS 4 |
+| Forms | Angular Reactive Forms |
+| HTTP | Angular HttpClient |
+| Location data | country-state-city |
+| Backend | REST API (json-server or custom Node) |
 
-```bash
-ng serve
+## Architecture
+
+```
+src/app/
+├── model/              # TypeScript interfaces
+│   ├── account.model.ts
+│   ├── client.model.ts
+│   ├── company.model.ts
+│   ├── residence.model.ts
+│   └── user.model.ts
+├── services/           # HTTP services (one per resource)
+│   ├── http.service.ts         # Base CRUD wrapper
+│   ├── account.service.ts
+│   ├── client.service.ts
+│   ├── company.service.ts
+│   ├── residence.service.ts
+│   ├── login.service.ts
+│   └── user.service.ts
+└── presentation/       # Routed page components
+    ├── login/
+    ├── homepage/           # Shell with sidebar nav
+    ├── clients/            # Client list table
+    ├── client-form/        # Step 1 – personal data
+    ├── residence/          # Step 2 – address
+    ├── company/            # Step 3 – company data
+    └── client/             # Step 4 – review & confirm
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Multi-Step Form Flow
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+/homepage/client-form → /homepage/residence → /homepage/company → /homepage/client
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Each step auto-saves its form values to `localStorage` on every change. The final review page (`/client`) reads all three keys and assembles the full `Client` object.
 
-```bash
-ng generate --help
+| localStorage key | Content |
+|---|---|
+| `client-data` | Personal data (step 1) |
+| `residence-data` | Address data (step 2) |
+| `company-data` | Company data (step 3) |
+
+## Routes
+
+| Path | Component | Description |
+|---|---|---|
+| `/` | LoginComponent | Authentication |
+| `/homepage` | HomepageComponent | Shell (redirects to `/homepage/clients`) |
+| `/homepage/clients` | ClientsComponent | Client list with delete |
+| `/homepage/client-form` | ClientFormComponent | Step 1 personal data |
+| `/homepage/residence` | ResidenceComponent | Step 2 address |
+| `/homepage/company` | CompanyComponent | Step 3 company |
+| `/homepage/client` | ClientComponent | Step 4 review |
+
+## Services
+
+All services extend `HttpService` which wraps `HttpClient`. Every method returns an `Observable` — components are responsible for subscribing.
+
+```ts
+// HttpService methods
+load(param: string)                     // GET    /api/{param}
+add<T>(param: string, value: T)         // POST   /api/{param}
+update<T>(param: string, id, value: T)  // PUT    /api/{param}/{id}
+delete(param: string, id: number)       // DELETE /api/{param}/{id}
 ```
 
-## Building
+## Environments
 
-To build the project run:
+| File | API URL |
+|---|---|
+| `environment.ts` | `http://localhost:3000/` |
+| `environment.prod.ts` | `https://tr-client-back-end.onrender.com/` |
 
-```bash
-ng build
-```
+`http.service.ts` currently imports `environment.prod.ts` directly. To enable proper environment switching, change the import to `environment.ts` and configure `fileReplacements` in `angular.json` for the production build.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Getting Started
 
 ```bash
-ng test
+# Install dependencies
+npm install
+
+# Start the Angular dev server
+npm start
+
+# Start the backend server (if running locally)
+npm run server
 ```
 
-## Running end-to-end tests
+Visit `http://localhost:4200/` after starting the dev server.
 
-For end-to-end (e2e) testing, run:
+## Known Limitations
 
-```bash
-ng e2e
-```
+- Login sends credentials as URL query parameters. This is acceptable for json-server development; a production backend should use POST with JWT.
+- Multi-step form state lives in `localStorage`, not in a shared service. Navigating directly to step 3 without completing step 1 will result in missing data on the review page.
+- No authentication guard on `/homepage` routes.
+- `UserService` has no methods implemented yet.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Form Validation Reference
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Field | Rule |
+|---|---|
+| CNP (nationalId) | exactly 13 digits |
+| Phone | digits, `+`, `-`, spaces |
+| CUI | 8–10 digits |
+| Cod CAEN | exactly 4 digits |
+| Email | standard email format |
+| Dates | required, PrimeNG DatePicker |
