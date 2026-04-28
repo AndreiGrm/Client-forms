@@ -1,34 +1,25 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import emailjs from '@emailjs/browser';
 import { environment } from '../../environments/environment';
 import { from, Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
-const { publicKey, serviceId, inviteTemplateId, confirmationTemplateId, ownerEmail, appUrl } =
-  (environment as any).emailjs
-    ? { ...environment.emailjs, appUrl: environment.appUrl }
-    : { publicKey: '', serviceId: '', inviteTemplateId: '', confirmationTemplateId: '', ownerEmail: '', appUrl: '' };
+const { publicKey, serviceId, inviteTemplateId, confirmationTemplateId } = environment.emailjs;
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmailService {
+  private authService = inject(AuthService);
 
   constructor() {
     emailjs.init({ publicKey });
   }
 
-  /**
-   * Generates a URL-safe token that encodes the recipient email.
-   * Decoded client-side on the /register page — no server needed.
-   */
   generateToken(email: string): string {
     return btoa(`${email}:${Date.now()}`);
   }
 
-  /**
-   * Decodes a token back to email + timestamp.
-   * Returns null if the token is malformed or older than 7 days.
-   */
   decodeToken(token: string): { email: string } | null {
     try {
       const decoded = atob(token);
@@ -43,10 +34,6 @@ export class EmailService {
     }
   }
 
-  /**
-   * Sends an invitation email to the client with a personalised registration link.
-   * EmailJS template variables: {{to_email}}, {{register_link}}
-   */
   sendInvitation(recipientEmail: string): Observable<unknown> {
     const token = this.generateToken(recipientEmail);
     const registerLink = `${environment.appUrl}/register?token=${token}`;
@@ -59,20 +46,17 @@ export class EmailService {
     );
   }
 
-  /**
-   * Sends a confirmation email to the owner when a client completes registration.
-   * EmailJS template variables: {{owner_email}}, {{client_name}}, {{client_email}},
-   *   {{client_phone}}, {{client_national_id}}, {{client_data_json}}
-   */
   sendRegistrationConfirmation(clientData: Record<string, unknown>): Observable<unknown> {
+    const ownerEmail = this.authService.ownerEmail();
+
     return from(
       emailjs.send(serviceId, confirmationTemplateId, {
-        owner_email:      ownerEmail,
-        client_name:      `${clientData['firstName']} ${clientData['lastName']}`,
-        client_email:     clientData['email'],
-        client_phone:     clientData['phone'],
+        owner_email:        ownerEmail,
+        client_name:        `${clientData['firstName']} ${clientData['lastName']}`,
+        client_email:       clientData['email'],
+        client_phone:       clientData['phone'],
         client_national_id: clientData['nationalId'],
-        client_data_json: JSON.stringify(clientData, null, 2)
+        client_data_json:   JSON.stringify(clientData, null, 2)
       })
     );
   }

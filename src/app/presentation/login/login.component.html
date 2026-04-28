@@ -31,6 +31,10 @@
     }
   </div>
 
+  @if (loginError()) {
+    <div class="text-red-400 text-sm mb-4 text-center">{{ loginError() }}</div>
+  }
+
   <button
     type="button"
     (click)="onSubmit()"
