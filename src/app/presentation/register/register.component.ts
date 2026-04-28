@@ -33,7 +33,8 @@ export default class RegisterComponent implements OnInit {
   sending    = signal(false);
   sendError  = signal('');
 
-  private accountId = 0;
+  private accountId  = 0;
+  private ownerEmail = '';
 
   fields = [
     { name: 'firstName',    label: 'Prenume',          placeholder: 'Prenume',          type: 'text'   },
@@ -99,7 +100,8 @@ export default class RegisterComponent implements OnInit {
     const decoded = this.invitationService.decodeToken(token);
     if (!decoded) { this.tokenValid.set(false); return; }
 
-    this.accountId = decoded.accountId;
+    this.accountId  = decoded.accountId;
+    this.ownerEmail = decoded.ownerEmail;
     this.tokenValid.set(true);
     this.formData['email'] = decoded.email;
     this.values.update(v => ({ ...v, email: decoded.email }));
@@ -150,7 +152,7 @@ export default class RegisterComponent implements OnInit {
       created_at: new Date().toISOString()
     };
 
-    this.emailService.sendRegistrationConfirmation(clientPayload).subscribe({
+    this.emailService.sendRegistrationConfirmation(clientPayload, this.ownerEmail).subscribe({
       next: () => {
         this.sending.set(false);
         this.submitted.set(true);

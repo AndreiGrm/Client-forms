@@ -16,19 +16,20 @@ export class EmailService {
     emailjs.init({ publicKey });
   }
 
-  // Token format: base64(JSON({ e: email, a: accountId, t: timestamp }))
+  // Token: base64(JSON({ e: recipientEmail, a: accountId, o: ownerEmail, t: timestamp }))
   generateToken(email: string, accountId: number): string {
-    const payload = JSON.stringify({ e: email, a: accountId, t: Date.now() });
+    const ownerEmail = this.authService.ownerEmail();
+    const payload = JSON.stringify({ e: email, a: accountId, o: ownerEmail, t: Date.now() });
     return btoa(payload);
   }
 
-  decodeToken(token: string): { email: string; accountId: number } | null {
+  decodeToken(token: string): { email: string; accountId: number; ownerEmail: string } | null {
     try {
       const payload = JSON.parse(atob(token));
-      const { e: email, a: accountId, t: timestamp } = payload;
+      const { e: email, a: accountId, o: ownerEmail, t: timestamp } = payload;
       const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
       if (!email || !accountId || isNaN(timestamp) || Date.now() - timestamp > sevenDaysMs) return null;
-      return { email, accountId };
+      return { email, accountId, ownerEmail: ownerEmail ?? '' };
     } catch {
       return null;
     }
@@ -47,9 +48,7 @@ export class EmailService {
     );
   }
 
-  sendRegistrationConfirmation(clientData: Record<string, unknown>): Observable<unknown> {
-    const ownerEmail = this.authService.ownerEmail();
-
+  sendRegistrationConfirmation(clientData: Record<string, unknown>, ownerEmail: string): Observable<unknown> {
     return from(
       emailjs.send(serviceId, confirmationTemplateId, {
         owner_email:        ownerEmail,
