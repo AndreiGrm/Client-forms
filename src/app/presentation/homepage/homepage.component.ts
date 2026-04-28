@@ -1,62 +1,39 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { InputTextModule } from 'primeng/inputtext';
-import { LoginService } from '../../services/login.service';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { BadgeModule } from 'primeng/badge';
 import { RippleModule } from 'primeng/ripple';
-import { RouterOutlet } from '@angular/router'
-
 import { AvatarModule } from 'primeng/avatar';
+
 @Component({
   selector: 'app-homepage',
-  imports: [
-    InputTextModule, MenuModule, BadgeModule, RippleModule, AvatarModule, RouterOutlet, RouterModule
-  ],
+  imports: [MenuModule, BadgeModule, RippleModule, AvatarModule, RouterOutlet, RouterModule],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
 export default class HomepageComponent implements OnInit {
-  router = inject(Router)
-  visible: boolean = true;
-    routerLinkActive: string = 'active';
+  router = inject(Router);
   items: MenuItem[] | undefined;
 
-    ngOnInit() {
-        this.items = [
-            {
-                separator: true
-            },
-            {
-                label: 'Things',
-                items: [
-                    {
-                        label: 'Clients',
-                        icon: 'pi pi-user',
-                        routerLink: ['clients'] 
-                    },
-                    {
-                        label: 'Form',
-                        icon: 'pi pi-clipboard',
-                        routerLink: ['client-form']
-                    }
-                ]
-            },
-            {
-                separator: true
-            },
-            {
-                label: 'Account',
-                items: [
-                    {
-                        label: 'Logout',
-                        icon: 'pi pi-sign-out',
-                        routerLink: ['/'] 
-                    }
-                ]
-            },
-        ];
-    }
-  
+  ngOnInit(): void {
+    this.items = [
+      { separator: true },
+      {
+        label: 'General',
+        items: [
+          { label: 'Dashboard', icon: 'pi pi-home',      routerLink: ['dashboard']    },
+          { label: 'Clienți',   icon: 'pi pi-users',     routerLink: ['clients']      },
+          { label: 'Formular',  icon: 'pi pi-clipboard', routerLink: ['client-form']  }
+        ]
+      },
+      { separator: true },
+      {
+        label: 'Cont',
+        items: [
+          { label: 'Logout', icon: 'pi pi-sign-out', routerLink: ['/'] }
+        ]
+      }
+    ];
+  }
 }

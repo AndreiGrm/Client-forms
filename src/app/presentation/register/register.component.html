@@ -1,0 +1,112 @@
+<div class="min-h-screen bg-gray-950 flex items-start justify-center py-12 px-4">
+  <div class="w-full max-w-3xl">
+
+    <!-- Logo / brand -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-purple-300">Înregistrare client</h1>
+      <p class="text-gray-400 mt-2">Completați formularul de mai jos. Datele vor fi transmise pentru confirmare.</p>
+    </div>
+
+    <!-- Invalid / expired token -->
+    @if (tokenValid() === false) {
+      <div class="bg-gray-900 rounded-xl p-10 text-center border border-red-800">
+        <span class="pi pi-times-circle text-red-400 text-5xl mb-4 block"></span>
+        <h2 class="text-xl font-semibold text-red-300 mb-2">Link invalid sau expirat</h2>
+        <p class="text-gray-400">Contactați administratorul pentru un nou link de înregistrare.</p>
+      </div>
+    }
+
+    <!-- Verification pending -->
+    @if (tokenValid() === null) {
+      <div class="bg-gray-900 rounded-xl p-10 text-center">
+        <span class="pi pi-spin pi-spinner text-purple-400 text-4xl block mb-4"></span>
+        <p class="text-gray-400">Se verifică invitația...</p>
+      </div>
+    }
+
+    <!-- Success screen -->
+    @if (submitted()) {
+      <div class="bg-gray-900 rounded-xl p-10 text-center border border-green-800">
+        <span class="pi pi-check-circle text-green-400 text-5xl mb-4 block"></span>
+        <h2 class="text-xl font-semibold text-green-300 mb-2">Date trimise cu succes!</h2>
+        <p class="text-gray-400">Datele dumneavoastră au fost transmise. Veți fi contactat după verificare.</p>
+      </div>
+    }
+
+    <!-- Registration form -->
+    @if (tokenValid() === true && !submitted()) {
+      <div class="bg-gray-900 rounded-xl shadow-lg p-8 space-y-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          @for (field of fields; track field.name) {
+            <div class="flex flex-col gap-1">
+              <label class="font-semibold text-gray-200 text-sm mb-1">{{ field.label }}</label>
+
+              @switch (field.type) {
+                @case ('date') {
+                  <p-datepicker
+                    [(ngModel)]="formData[field.name]"
+                    (ngModelChange)="onModelChange(field.name, $event)"
+                    (onBlur)="markTouched(field.name)"
+                    class="w-full"
+                  />
+                }
+                @case ('select') {
+                  <p-select
+                    [options]="getOptions(field.name)"
+                    [(ngModel)]="formData[field.name]"
+                    (ngModelChange)="onModelChange(field.name, $event)"
+                    (onHide)="markTouched(field.name)"
+                    optionLabel="name"
+                    optionValue="code"
+                    placeholder="Seleziona..."
+                    class="w-full"
+                  />
+                }
+                @default {
+                  <input
+                    pInputText
+                    [value]="getTextValue(field.name)"
+                    [placeholder]="field.placeholder"
+                    [attr.type]="field.name === 'email' ? 'email' : 'text'"
+                    (input)="onTextChange(field.name, $any($event.target).value)"
+                    (blur)="markTouched(field.name)"
+                    class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                  />
+                }
+              }
+
+              @if (isTouched(field.name) && getError(field.name)) {
+                <div class="text-red-400 text-xs mt-1">{{ getError(field.name) }}</div>
+              }
+            </div>
+          }
+        </div>
+
+        @if (sendError()) {
+          <div class="flex items-center gap-2 bg-red-900/40 border border-red-700 text-red-300 text-sm rounded-lg px-4 py-3">
+            <span class="pi pi-exclamation-triangle flex-shrink-0"></span>
+            {{ sendError() }}
+          </div>
+        }
+
+        <div class="flex justify-end pt-2">
+          <button
+            type="button"
+            (click)="onSubmit()"
+            [disabled]="sending()"
+            [class.opacity-50]="!isValid()"
+            class="bg-purple-700 hover:bg-purple-800 text-white px-8 py-2 rounded-lg shadow transition flex items-center gap-2"
+          >
+            @if (sending()) {
+              <span class="pi pi-spin pi-spinner text-sm"></span>
+            }
+            Trimite datele
+          </button>
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>

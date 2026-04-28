@@ -1,31 +1,20 @@
 <div class="max-w-5xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 mt-8 text-gray-100">
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-left text-3xl font-bold text-purple-300 text-center flex-1">Lista Clienți</h2>
-    <div class="flex gap-2 ml-4">
-      <button
-        type="button"
-        class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-lg shadow transition"
-        (click)="goHome()"
-      >
+    <h2 class="text-3xl font-bold text-purple-300">Lista Clienți</h2>
+    <div class="flex gap-2">
+      <button type="button" (click)="goHome()" class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-lg shadow transition">
         Home
       </button>
-      <button
-        type="button"
-        class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-lg shadow transition"
-        (click)="addClient()"
-      >
+      <button type="button" (click)="addClient()" class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-lg shadow transition">
         Adaugă client
       </button>
-      <button
-        type="button"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
-        (click)="inviteClient()"
-      >
+      <button type="button" (click)="inviteClient()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition">
         Invită client
       </button>
     </div>
   </div>
-  <p-table [value]="clients" [tableStyle]="{ 'min-width': '50rem' }" class="p-datatable-sm">
+
+  <p-table [value]="clients()" [tableStyle]="{ 'min-width': '50rem' }" class="p-datatable-sm">
     <ng-template #header>
       <tr>
         <th>ID</th>
@@ -44,12 +33,7 @@
         <td>{{ client.email }}</td>
         <td>{{ client.phone }}</td>
         <td>
-          <button
-            type="button"
-            class="text-red-500 hover:text-red-700"
-            (click)="deleteClient(client)"
-            title="Șterge client"
-          >
+          <button type="button" class="text-red-500 hover:text-red-700" (click)="deleteClient(client)" title="Șterge client">
             <i class="pi pi-trash"></i>
           </button>
         </td>
@@ -57,3 +41,70 @@
     </ng-template>
   </p-table>
 </div>
+
+<!-- Invite dialog -->
+<p-dialog
+  header="Invită un client"
+  [(visible)]="inviteVisible"
+  [modal]="true"
+  [style]="{ width: '420px' }"
+  styleClass="bg-gray-900"
+>
+  @if (inviteSuccess()) {
+    <div class="flex flex-col items-center gap-4 py-4 text-center">
+      <span class="pi pi-check-circle text-green-400 text-5xl"></span>
+      <p class="text-gray-200 text-lg font-semibold">Invitație trimisă!</p>
+      <p class="text-gray-400 text-sm">Am trimis un link de înregistrare la <strong class="text-white">{{ inviteEmail() }}</strong>.</p>
+      <button type="button" (click)="inviteVisible.set(false)" class="mt-2 bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
+        Închide
+      </button>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-4 py-2">
+      <p class="text-gray-400 text-sm">
+        Clientul va primi un email cu un link personalizat unde poate introduce datele sale. Vei fi notificat pentru confirmare.
+      </p>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-gray-300 font-medium text-sm">Adresă email</label>
+        <input
+          pInputText
+          type="email"
+          placeholder="client@exemplu.com"
+          [value]="inviteEmail()"
+          (input)="inviteEmail.set($any($event.target).value)"
+          (blur)="inviteEmailTouched.set(true)"
+          class="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        @if (inviteEmailTouched() && inviteEmailError()) {
+          <div class="text-red-400 text-xs mt-1">{{ inviteEmailError() }}</div>
+        }
+      </div>
+
+      @if (inviteError()) {
+        <div class="flex items-center gap-2 bg-red-900/40 border border-red-700 text-red-300 text-sm rounded-lg px-4 py-3">
+          <span class="pi pi-exclamation-triangle flex-shrink-0"></span>
+          {{ inviteError() }}
+        </div>
+      }
+
+      <div class="flex justify-end gap-2 mt-2">
+        <button type="button" (click)="inviteVisible.set(false)" class="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-800 transition">
+          Anulează
+        </button>
+        <button
+          type="button"
+          (click)="sendInvite()"
+          [disabled]="inviteSending()"
+          [class.opacity-50]="!inviteFormValid()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow transition flex items-center gap-2"
+        >
+          @if (inviteSending()) {
+            <span class="pi pi-spin pi-spinner text-sm"></span>
+          }
+          Trimite invitație
+        </button>
+      </div>
+    </div>
+  }
+</p-dialog>
