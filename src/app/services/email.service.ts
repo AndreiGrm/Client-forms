@@ -16,26 +16,27 @@ export class EmailService {
     emailjs.init({ publicKey });
   }
 
-  generateToken(email: string): string {
-    return btoa(`${email}:${Date.now()}`);
+  // Token format: base64(JSON({ e: email, a: accountId, t: timestamp }))
+  generateToken(email: string, accountId: number): string {
+    const payload = JSON.stringify({ e: email, a: accountId, t: Date.now() });
+    return btoa(payload);
   }
 
-  decodeToken(token: string): { email: string } | null {
+  decodeToken(token: string): { email: string; accountId: number } | null {
     try {
-      const decoded = atob(token);
-      const colonIndex = decoded.lastIndexOf(':');
-      const email = decoded.substring(0, colonIndex);
-      const timestamp = Number(decoded.substring(colonIndex + 1));
+      const payload = JSON.parse(atob(token));
+      const { e: email, a: accountId, t: timestamp } = payload;
       const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-      if (!email || isNaN(timestamp) || Date.now() - timestamp > sevenDaysMs) return null;
-      return { email };
+      if (!email || !accountId || isNaN(timestamp) || Date.now() - timestamp > sevenDaysMs) return null;
+      return { email, accountId };
     } catch {
       return null;
     }
   }
 
   sendInvitation(recipientEmail: string): Observable<unknown> {
-    const token = this.generateToken(recipientEmail);
+    const accountId = this.authService.accountId() ?? 1;
+    const token = this.generateToken(recipientEmail, accountId);
     const registerLink = `${environment.appUrl}/register?token=${token}`;
 
     return from(

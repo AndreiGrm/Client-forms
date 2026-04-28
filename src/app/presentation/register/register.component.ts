@@ -6,8 +6,10 @@ import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
 import { Country } from 'country-state-city';
+import { switchMap } from 'rxjs';
 import { InvitationService } from '../../services/invitation.service';
 import { EmailService } from '../../services/email.service';
+import { ClientService } from '../../services/client.service';
 
 interface CountryOption {
   name: string;
@@ -26,11 +28,14 @@ export default class RegisterComponent implements OnInit {
   private route             = inject(ActivatedRoute);
   private invitationService = inject(InvitationService);
   private emailService      = inject(EmailService);
+  private clientService     = inject(ClientService);
 
   tokenValid = signal<boolean | null>(null);
   submitted  = signal(false);
   sending    = signal(false);
   sendError  = signal('');
+
+  private accountId = 0;
 
   fields = [
     { name: 'firstName',    label: 'Prenume',          placeholder: 'Prenume',          type: 'text'   },
@@ -96,8 +101,8 @@ export default class RegisterComponent implements OnInit {
     const decoded = this.invitationService.decodeToken(token);
     if (!decoded) { this.tokenValid.set(false); return; }
 
+    this.accountId = decoded.accountId;
     this.tokenValid.set(true);
-    // Pre-fill email from token
     this.formData['email'] = decoded.email;
     this.values.update(v => ({ ...v, email: decoded.email }));
   }
@@ -141,7 +146,15 @@ export default class RegisterComponent implements OnInit {
     this.sending.set(true);
     this.sendError.set('');
 
-    this.emailService.sendRegistrationConfirmation(this.values() as Record<string, unknown>).subscribe({
+    const clientPayload = {
+      ...this.values(),
+      account_id: this.accountId,
+      created_at: new Date().toISOString()
+    };
+
+    this.clientService.add(clientPayload as any).pipe(
+      switchMap(() => this.emailService.sendRegistrationConfirmation(clientPayload as Record<string, unknown>))
+    ).subscribe({
       next: () => {
         this.sending.set(false);
         this.submitted.set(true);

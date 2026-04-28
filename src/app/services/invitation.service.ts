@@ -12,7 +12,7 @@ export class InvitationService {
     return this.emailService.sendInvitation(email);
   }
 
-  decodeToken(token: string): { email: string } | null {
+  decodeToken(token: string): { email: string; accountId: number } | null {
     return this.emailService.decodeToken(token);
   }
 }
