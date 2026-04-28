@@ -37,6 +37,14 @@ export default class ClientsComponent implements OnInit {
     });
   }
 
+  addClient(): void {
+    this.router.navigate(['homepage/client-form']);
+  }
+
+  inviteClient(): void {
+    this.router.navigate(['homepage/client-form']);
+  }
+
   goHome(): void {
     this.router.navigate(['homepage/client-form']);
   }

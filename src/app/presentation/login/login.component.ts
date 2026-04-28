@@ -1,41 +1,36 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { LoginService } from '../../services/login.service';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { LoginService } from '../../services/login.service';
+
 @Component({
   selector: 'app-login',
-  imports: [
-    ReactiveFormsModule,
-    InputTextModule
-  ],
+  imports: [InputTextModule, ButtonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export default class LoginComponent {
-  private fb = inject(FormBuilder).nonNullable;
-  loginService = inject(LoginService);
-  router = inject(Router)
+  private loginService = inject(LoginService);
+  private router = inject(Router);
 
-  form = this.fb.group({
-    username: ['', Validators.required],
-    password: ['', Validators.required]
-  })
+  username = signal('');
+  password = signal('');
+  usernameTouched = signal(false);
+  passwordTouched = signal(false);
+
+  usernameError = computed(() => (!this.username() ? 'Campo obbligatorio.' : ''));
+  passwordError = computed(() => (!this.password() ? 'Campo obbligatorio.' : ''));
+  isValid = computed(() => !this.usernameError() && !this.passwordError());
 
   onSubmit(): void {
-    if (this.form.valid) {
-      this.loginService.login(this.form.value.username, this.form.value.password).subscribe({
-        next: () => {
-          this.router.navigate(['/homepage']);
-        },
-        error: (error) => {
-          console.error('Login failed', error);
-        }
+    this.usernameTouched.set(true);
+    this.passwordTouched.set(true);
+    if (this.isValid()) {
+      this.loginService.login(this.username(), this.password()).subscribe({
+        next: () => this.router.navigate(['/homepage']),
+        error: (error) => console.error('Login failed', error)
       });
     }
   }
-
-
-  
 }

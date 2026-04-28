@@ -1,52 +1,70 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8">
+<div class="max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8">
 
-  <!-- HEADER -->
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-purple-300 tracking-tight">Client Registration</h2>
-    <button type="button" (click)="clientsPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
-      Clients
-    </button>
-    <button type="button" (click)="nextPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
-      Next
-    </button>
+    <div class="flex gap-2">
+      <button type="button" (click)="clientsPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
+        Clients
+      </button>
+      <button type="button" (click)="nextPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
+        Next
+      </button>
+    </div>
   </div>
 
-  <!-- FORM FIELDS -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     @for (field of fields; track field.name) {
       <div class="flex flex-col gap-1">
-        <label class="font-semibold text-gray-200 mb-1">{{field.label}}</label>
+        <label class="font-semibold text-gray-200 mb-1">{{ field.label }}</label>
+
         @switch (field.type) {
           @case ('date') {
-            <p-datepicker  [formControlName]="field.name" class="w-full  text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition"  />
+            <p-datepicker
+              [(ngModel)]="formData[field.name]"
+              (ngModelChange)="onModelChange(field.name, $event)"
+              (onBlur)="markTouched(field.name)"
+              class="w-full text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+            />
           }
           @case ('select') {
             <p-select
               [options]="getOptions(field.name)"
-              [formControlName]="field.name"
+              [(ngModel)]="formData[field.name]"
+              (ngModelChange)="onModelChange(field.name, $event)"
+              (onHide)="markTouched(field.name)"
               optionLabel="name"
               optionValue="code"
-              placeholder="Select a City"
-              class="w-full md:w-56"
+              placeholder="Seleziona..."
+              class="w-full"
             />
           }
           @default {
-            <input pInputText [formControlName]="field.name" [placeholder]="field.placeholder" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" />
+            <input
+              pInputText
+              [value]="getTextValue(field.name)"
+              [placeholder]="field.placeholder"
+              (input)="onTextChange(field.name, $any($event.target).value)"
+              (blur)="markTouched(field.name)"
+              class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+            />
           }
         }
-        @if (form.get(field.name)?.invalid && (form.get(field.name)?.dirty || form.get(field.name)?.touched)) {
-          <div class="text-red-400 text-xs mt-1">
-            {{ getErrorMessage(field.name) }}
-          </div>
+
+        @if (isTouched(field.name) && getError(field.name)) {
+          <div class="text-red-400 text-xs mt-1">{{ getError(field.name) }}</div>
         }
       </div>
     }
   </div>
 
-  <!-- SUBMIT BUTTON -->
   <div class="flex justify-end">
-    <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white px-8 py-2 rounded-lg shadow transition disabled:opacity-50" [disabled]="form.invalid">
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [class.opacity-50]="!isValid()"
+      class="bg-purple-700 hover:bg-purple-800 text-white px-8 py-2 rounded-lg shadow transition"
+    >
       Submit Client
     </button>
   </div>
-</form>
+</div>

@@ -1,81 +1,104 @@
-import { AfterViewInit, Component, inject } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { ButtonModule } from 'primeng/button';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+
+interface CompanyValues {
+  name: string;
+  cui: string;
+  tradeRegisterNumber: string;
+  mainCaen: string;
+  address: string;
+}
 
 @Component({
   selector: 'app-company',
-  imports: [
-    ReactiveFormsModule,
-    InputTextModule,
-    InputNumberModule,
-    ButtonModule
-  ],
+  imports: [InputTextModule, ButtonModule],
   templateUrl: './company.component.html',
   styleUrl: './company.component.css'
 })
-export default class CompanyComponent implements AfterViewInit {
-  private fb = inject(FormBuilder).nonNullable;
+export default class CompanyComponent {
   router = inject(Router);
 
-  form = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    cui: ['', [Validators.required, Validators.pattern(/^[0-9]{8,10}$/)]],
-    tradeRegisterNumber: ['', [Validators.required, Validators.minLength(3)]],
-    mainCaen: ['', [Validators.required, Validators.pattern(/^[0-9]{4}$/)]],
-    address: ['', [Validators.required, Validators.minLength(5)]],
-  });
-
   fields = [
-    { name: 'name', label: 'Denumire firmă', placeholder: 'Denumire firmă', type: 'text' },
-    { name: 'cui', label: 'CUI', placeholder: 'CUI', type: 'text' },
-    { name: 'tradeRegisterNumber', label: 'Nr. Registrul Comerțului', placeholder: 'Nr. Registrul Comerțului', type: 'text' },
-    { name: 'mainCaen', label: 'Cod CAEN', placeholder: 'Cod CAEN', type: 'text' },
-    { name: 'address', label: 'Adresă', placeholder: 'Adresă', type: 'text' }
+    { name: 'name',                label: 'Denumire firmă',           placeholder: 'Denumire firmă' },
+    { name: 'cui',                 label: 'CUI',                      placeholder: 'CUI' },
+    { name: 'tradeRegisterNumber', label: 'Nr. Registrul Comerțului', placeholder: 'Nr. Registrul Comerțului' },
+    { name: 'mainCaen',            label: 'Cod CAEN',                 placeholder: 'Cod CAEN' },
+    { name: 'address',             label: 'Adresă',                   placeholder: 'Adresă' }
   ];
 
+  private readonly EMPTY: CompanyValues = {
+    name: '', cui: '', tradeRegisterNumber: '', mainCaen: '', address: ''
+  };
+
+  formValues = signal<CompanyValues>(this.loadFromStorage());
+  touched    = signal<Set<string>>(new Set());
+
+  errors = computed(() => {
+    const v = this.formValues();
+    return {
+      name:                !v.name ? 'Campo obbligatorio.' :
+                           v.name.length < 2 ? 'Lunghezza minima: 2.' : '',
+      cui:                 !v.cui ? 'Campo obbligatorio.' :
+                           !/^[0-9]{8,10}$/.test(v.cui) ? 'Formato non valido (8-10 cifre).' : '',
+      tradeRegisterNumber: !v.tradeRegisterNumber ? 'Campo obbligatorio.' :
+                           v.tradeRegisterNumber.length < 3 ? 'Lunghezza minima: 3.' : '',
+      mainCaen:            !v.mainCaen ? 'Campo obbligatorio.' :
+                           !/^[0-9]{4}$/.test(v.mainCaen) ? 'Formato non valido (4 cifre).' : '',
+      address:             !v.address ? 'Campo obbligatorio.' :
+                           v.address.length < 5 ? 'Lunghezza minima: 5.' : '',
+    } as Record<string, string>;
+  });
+
+  isValid = computed(() => Object.values(this.errors()).every(e => !e));
+
   constructor() {
-    this.form.valueChanges.subscribe(value => {
-      localStorage.setItem('company-data', JSON.stringify(value));
+    effect(() => {
+      localStorage.setItem('company-data', JSON.stringify(this.formValues()));
     });
   }
 
-  ngAfterViewInit(): void {
-    const savedData = localStorage.getItem('company-data');
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData);
-        this.form.patchValue(parsed);
-      } catch (err) {
-        console.error('Error parsing saved data:', err);
-      }
+  private loadFromStorage(): CompanyValues {
+    const saved = localStorage.getItem('company-data');
+    if (saved) {
+      try { return { ...this.EMPTY, ...JSON.parse(saved) }; } catch {}
     }
+    return { ...this.EMPTY };
   }
 
-  getErrorMessage(controlName: string): string {
-    const control = this.form.get(controlName);
-    if (!control || !control.errors) return '';
-    if (control.errors['required']) return 'Campo obbligatorio.';
-    if (control.errors['minlength']) return `Lunghezza minima: ${control.errors['minlength'].requiredLength}.`;
-    if (control.errors['maxlength']) return `Lunghezza massima: ${control.errors['maxlength'].requiredLength}.`;
-    if (control.errors['pattern']) return 'Formato non valido.';
-    return 'Campo non valido.';
+  getValue(name: string): string {
+    return (this.formValues() as unknown as Record<string, string>)[name] ?? '';
+  }
+
+  updateField(name: string, value: string): void {
+    this.formValues.update(v => ({ ...v, [name]: value }));
+  }
+
+  markTouched(name: string): void {
+    this.touched.update(s => new Set([...s, name]));
+  }
+
+  isTouched(name: string): boolean {
+    return this.touched().has(name);
+  }
+
+  getError(name: string): string {
+    return this.errors()[name] ?? '';
   }
 
   onSubmit(): void {
-    if (this.form.valid) {
+    this.touched.set(new Set(this.fields.map(f => f.name)));
+    if (this.isValid()) {
       this.router.navigate(['homepage/client']);
     }
   }
 
-  nextPage() {
-    this.router.navigate(['homepage/client']);
+  nextPage(): void {
+    this.onSubmit();
   }
 
-  previousPage() {
+  previousPage(): void {
     this.router.navigate(['homepage/residence']);
   }
 }

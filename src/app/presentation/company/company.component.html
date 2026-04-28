@@ -1,53 +1,40 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8">
+<div class="max-w-3xl mx-auto bg-gray-900 rounded-xl shadow-lg p-8 space-y-8">
 
-    <!-- HEADER -->
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-purple-300 tracking-tight">Companies</h2>
-    <button type="button" (click)="previousPage()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow transition">
-      Back
-    </button>
-    <button type="button" (click)="nextPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">
-      Next
-    </button>
+    <div class="flex gap-2">
+      <button type="button" (click)="previousPage()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow transition">Back</button>
+      <button type="button" (click)="nextPage()" class="bg-purple-700 hover:bg-purple-800 text-white px-6 py-2 rounded-lg shadow transition">Next</button>
+    </div>
   </div>
 
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    @for (field of fields; track field.name) {
+      <div class="flex flex-col gap-1">
+        <label class="font-semibold text-gray-200 mb-1">{{ field.label }}</label>
+        <input
+          pInputText
+          [value]="getValue(field.name)"
+          [placeholder]="field.placeholder"
+          (input)="updateField(field.name, $any($event.target).value)"
+          (blur)="markTouched(field.name)"
+          class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+        />
+        @if (isTouched(field.name) && getError(field.name)) {
+          <div class="text-red-400 text-xs mt-1">{{ getError(field.name) }}</div>
+        }
+      </div>
+    }
+  </div>
 
-    <!-- @for (company of companies; track company.get('id')?.value) { -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      @for (field of fields; track field.name) {
-        <div class="flex flex-col gap-1">
-          <label class="font-semibold text-gray-200 mb-1">{{field.label}}</label>
-          @switch (field.type) {
-            @case ('date') {
-              <input pInputText [formControlName]="field.name" type="date" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" />
-            }
-            @case ('email') {
-              <input pInputText [formControlName]="field.name" type="email" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" [placeholder]="field.placeholder" />
-            }
-            @default {
-              <input pInputText [formControlName]="field.name" [placeholder]="field.placeholder" class="w-full bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition" />
-            }
-          }
-          @if (form.get(field.name)?.invalid && (form.get(field.name)?.dirty || form.get(field.name)?.touched)) {
-            <div class="text-red-400 text-xs mt-1">
-              {{ getErrorMessage(field.name) }}
-            </div>
-          }
-        </div>
-      }
-    <!-- } -->
-
-    </div>
-
-
-  <!-- <button type="button" (click)="addCompany()" class="bg-blue-600 text-white px-4 py-2 rounded">
-    Add Company
-  </button> -->
-
-    <!-- SUBMIT BUTTON -->
   <div class="flex justify-end">
-    <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white px-8 py-2 rounded-lg shadow transition disabled:opacity-50" [disabled]="form.invalid">
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [class.opacity-50]="!isValid()"
+      class="bg-purple-700 hover:bg-purple-800 text-white px-8 py-2 rounded-lg shadow transition"
+    >
       Submit Client
     </button>
   </div>
-</form>
+</div>

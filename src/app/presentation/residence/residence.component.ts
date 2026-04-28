@@ -1,86 +1,113 @@
-import { AfterViewInit, Component, inject } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { ButtonModule } from 'primeng/button';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+
+interface ResidenceValues {
+  country: string;
+  cityOrSector: string;
+  type: string;
+  streetType: string;
+  streetName: string;
+  number: string;
+  building: string;
+  staircase: string;
+  floor: string;
+  apartment: string;
+}
 
 @Component({
   selector: 'app-residence',
-  imports: [
-    ReactiveFormsModule,
-    InputTextModule,
-    InputNumberModule,
-    ButtonModule
-  ],
+  imports: [InputTextModule, ButtonModule],
   templateUrl: './residence.component.html',
   styleUrl: './residence.component.css'
 })
-export default class ResidenceComponent implements AfterViewInit {
-  private fb = inject(FormBuilder).nonNullable;
+export default class ResidenceComponent {
   router = inject(Router);
 
-  form = this.fb.group({
-    country: ['', Validators.required],
-    cityOrSector: ['', Validators.required],
-    type: ['', Validators.required],
-    streetType: ['', Validators.required],
-    streetName: ['', [Validators.required, Validators.minLength(2)]],
-    number: [null as number | null, [Validators.required, Validators.min(1)]],
-    building: ['', Validators.maxLength(10)],
-    staircase: ['', Validators.maxLength(5)],
-    floor: [null as number | null, [Validators.min(0)]],
-    apartment: [null as number | null, [Validators.min(1)]],
-  });
-
   fields = [
-    { name: 'country', label: 'Țară', placeholder: 'Țară', type: 'text' },
-    { name: 'cityOrSector', label: 'Oraș / Sector', placeholder: 'Oraș / Sector', type: 'text' },
-    { name: 'type', label: 'Tip locuință', placeholder: 'Tip locuință', type: 'text' },
-    { name: 'streetType', label: 'Tip stradă', placeholder: 'Tip stradă', type: 'text' },
-    { name: 'streetName', label: 'Nume stradă', placeholder: 'Nume stradă', type: 'text' },
-    { name: 'number', label: 'Număr', placeholder: 'Număr', type: 'number' },
-    { name: 'building', label: 'Bloc', placeholder: 'Bloc', type: 'text' },
-    { name: 'staircase', label: 'Scară', placeholder: 'Scară', type: 'text' },
-    { name: 'floor', label: 'Etaj', placeholder: 'Etaj', type: 'number' },
-    { name: 'apartment', label: 'Apartament', placeholder: 'Apartament', type: 'number' }
+    { name: 'country',       label: 'Țară',           placeholder: 'Țară' },
+    { name: 'cityOrSector',  label: 'Oraș / Sector',  placeholder: 'Oraș / Sector' },
+    { name: 'type',          label: 'Tip locuință',   placeholder: 'Tip locuință' },
+    { name: 'streetType',    label: 'Tip stradă',     placeholder: 'Tip stradă' },
+    { name: 'streetName',    label: 'Nume stradă',    placeholder: 'Nume stradă' },
+    { name: 'number',        label: 'Număr',          placeholder: 'Număr' },
+    { name: 'building',      label: 'Bloc',           placeholder: 'Bloc' },
+    { name: 'staircase',     label: 'Scară',          placeholder: 'Scară' },
+    { name: 'floor',         label: 'Etaj',           placeholder: 'Etaj' },
+    { name: 'apartment',     label: 'Apartament',     placeholder: 'Apartament' }
   ];
 
+  private readonly EMPTY: ResidenceValues = {
+    country: '', cityOrSector: '', type: '', streetType: '',
+    streetName: '', number: '', building: '', staircase: '', floor: '', apartment: ''
+  };
+
+  formValues = signal<ResidenceValues>(this.loadFromStorage());
+  touched    = signal<Set<string>>(new Set());
+
+  errors = computed(() => {
+    const v = this.formValues();
+    return {
+      country:             !v.country       ? 'Campo obbligatorio.' : '',
+      cityOrSector:        !v.cityOrSector  ? 'Campo obbligatorio.' : '',
+      type:                !v.type          ? 'Campo obbligatorio.' : '',
+      streetType:          !v.streetType    ? 'Campo obbligatorio.' : '',
+      streetName:          !v.streetName    ? 'Campo obbligatorio.' :
+                           v.streetName.length < 2 ? 'Lunghezza minima: 2.' : '',
+      number:              !v.number        ? 'Campo obbligatorio.' :
+                           Number(v.number) < 1 ? 'Valore minimo: 1.' : '',
+      building:            v.building.length  > 10 ? 'Lunghezza massima: 10.' : '',
+      staircase:           v.staircase.length > 5  ? 'Lunghezza massima: 5.'  : '',
+      floor:               v.floor && Number(v.floor) < 0     ? 'Valore minimo: 0.' : '',
+      apartment:           v.apartment && Number(v.apartment) < 1 ? 'Valore minimo: 1.' : '',
+    } as Record<string, string>;
+  });
+
+  isValid = computed(() => Object.values(this.errors()).every(e => !e));
+
   constructor() {
-    this.form.valueChanges.subscribe(value => {
-      localStorage.setItem('residence-data', JSON.stringify(value));
+    effect(() => {
+      localStorage.setItem('residence-data', JSON.stringify(this.formValues()));
     });
   }
 
-  ngAfterViewInit(): void {
-    const savedData = localStorage.getItem('residence-data');
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData);
-        this.form.patchValue(parsed);
-      } catch (err) {
-        console.error('Error parsing saved data:', err);
-      }
+  private loadFromStorage(): ResidenceValues {
+    const saved = localStorage.getItem('residence-data');
+    if (saved) {
+      try { return { ...this.EMPTY, ...JSON.parse(saved) }; } catch {}
+    }
+    return { ...this.EMPTY };
+  }
+
+  getValue(name: string): string {
+    return (this.formValues() as unknown as Record<string, string>)[name] ?? '';
+  }
+
+  updateField(name: string, value: string): void {
+    this.formValues.update(v => ({ ...v, [name]: value }));
+  }
+
+  markTouched(name: string): void {
+    this.touched.update(s => new Set([...s, name]));
+  }
+
+  isTouched(name: string): boolean {
+    return this.touched().has(name);
+  }
+
+  getError(name: string): string {
+    return this.errors()[name] ?? '';
+  }
+
+  nextPage(): void {
+    this.touched.set(new Set(this.fields.map(f => f.name)));
+    if (this.isValid()) {
+      this.router.navigate(['homepage/company']);
     }
   }
 
-  getErrorMessage(controlName: string): string {
-    const control = this.form.get(controlName);
-    if (!control || !control.errors) return '';
-    if (control.errors['required']) return 'Campo obbligatorio.';
-    if (control.errors['minlength']) return `Lunghezza minima: ${control.errors['minlength'].requiredLength}.`;
-    if (control.errors['maxlength']) return `Lunghezza massima: ${control.errors['maxlength'].requiredLength}.`;
-    if (control.errors['min']) return `Valore minimo: ${control.errors['min'].min}.`;
-    if (control.errors['max']) return `Valore massimo: ${control.errors['max'].max}.`;
-    return 'Campo non valido.';
-  }
-
-  nextPage() {
-    this.router.navigate(['homepage/company']);
-  }
-
-  previousPage() {
+  previousPage(): void {
     this.router.navigate(['homepage/client-form']);
   }
 }
