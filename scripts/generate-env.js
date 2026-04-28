@@ -4,6 +4,14 @@
 const fs   = require('fs');
 const path = require('path');
 
+const outPath = path.join(__dirname, '..', 'src', 'environments', 'environment.prod.ts');
+
+// Locally the file already exists (gitignored) — only generate on CI/Vercel
+if (fs.existsSync(outPath) && !process.env.CI && !process.env.VERCEL) {
+  console.log('environment.prod.ts already exists, skipping generation.');
+  process.exit(0);
+}
+
 const required = [
   'APP_URL', 'API_URL',
   'EMAILJS_PUBLIC_KEY', 'EMAILJS_SERVICE_ID',
@@ -29,6 +37,5 @@ const content = `export const environment = {
 };
 `;
 
-const outPath = path.join(__dirname, '..', 'src', 'environments', 'environment.prod.ts');
 fs.writeFileSync(outPath, content, 'utf8');
 console.log('Generated', outPath);
